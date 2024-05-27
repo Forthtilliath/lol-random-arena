@@ -1,3 +1,4 @@
+import type { HTMLInputAttributes } from 'svelte/elements';
 import Root from './input-number.svelte';
 import { type VariantProps, tv } from 'tailwind-variants';
 
@@ -22,8 +23,10 @@ type ButtonProps = {
 	variant: Variant;
 	disabled?: boolean;
 };
-type InputProps = {
+type InputProps = HTMLInputAttributes & {
 	value?: number;
+	min?: number;
+	max?: number;
 };
 
 export type ButtonEventHandler<T extends Event = Event> = T & {

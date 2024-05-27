@@ -13,7 +13,7 @@
 	import { type Champion, getChampions } from '$lib/helpers/getChampions';
 	// import { Switch } from '$lib/components/switch-with-label';
 	import { Switch } from '$lib/components/ui/switch';
-	import { RANKS, formSchema, type FormSchemaKey } from './schema';
+	import { criterias, RANKS, formSchema, type FormSchemaKey } from './schema';
 	import { Input } from '$lib/components/ui/input';
 	import { capitalize } from '$lib/helpers/capitalize';
 
@@ -54,6 +54,13 @@
 
 	const { form: formData, enhance } = form;
 
+	$: selectedMost = $formData.auto_ban_most
+		? {
+				label: criterias[$formData.auto_ban_most],
+				value: $formData.auto_ban_most
+			}
+		: undefined;
+
 	$: selectedRank = $formData.rank
 		? {
 				label: `${capitalize($formData.rank)}+`,
@@ -67,8 +74,6 @@
 
 	<Fieldset legend="Players">
 		<form method="post" use:enhance class="mx-auto space-y-4">
-			<!-- <Switch label="Randomly assign players in teams" /> -->
-
 			<!-- Random Team -->
 			<Form.Field
 				{form}
@@ -126,6 +131,49 @@
 					</Form.Field>
 
 					{#if $formData.auto_ban}
+						<!-- Number of bans -->
+						<Form.Field
+							{form}
+							name="auto_ban_count"
+							class="flex flex-row items-center justify-between"
+						>
+							<Form.Control let:attrs>
+								<div class="space-y-0.5">
+									<Form.Label>Number of bans</Form.Label>
+									<InputNumber {...attrs} bind:value={$formData.auto_ban_count} min={1} max={170} />
+									<Form.Description>
+										If enabled, you can choose to auto ban the <span class="italic">n</span> most popular
+										champions.
+									</Form.Description>
+								</div>
+							</Form.Control>
+						</Form.Field>
+
+						<!-- Criteria -->
+						<Form.Field {form} name="auto_ban_most">
+							<Form.Control let:attrs>
+								<Form.Label>Criteria to auto ban</Form.Label>
+								<Select.Root
+									selected={selectedMost}
+									onSelectedChange={(v) => {
+										v && ($formData.auto_ban_most = v.value);
+									}}
+								>
+									<Select.Trigger {...attrs}>
+										<Select.Value placeholder="Select a criteria" />
+									</Select.Trigger>
+									<Select.Content>
+										<Select.Item value="populars" label="Most populars" />
+										<Select.Item value="victories" label="Most victories" />
+										<Select.Item value="mixed" label="Mixed populars and victories" />
+									</Select.Content>
+								</Select.Root>
+								<input hidden bind:value={$formData.auto_ban_most} name={attrs.name} />
+							</Form.Control>
+							<Form.Description>You can choose the criteria to auto ban.</Form.Description>
+							<Form.FieldErrors />
+						</Form.Field>
+
 						<!-- Rank -->
 						<Form.Field {form} name="rank">
 							<Form.Control let:attrs>
@@ -137,7 +185,7 @@
 									}}
 								>
 									<Select.Trigger {...attrs}>
-										<Select.Value placeholder="Select a verified email to display" />
+										<Select.Value placeholder="Select a rank" />
 									</Select.Trigger>
 									<Select.Content>
 										{#each RANKS as rank}
@@ -148,27 +196,9 @@
 								<input hidden bind:value={$formData.rank} name={attrs.name} />
 							</Form.Control>
 							<Form.Description>
-								You can manage email address in your <a href="/examples/forms">email settings</a>.
+								You can choose from which rank the rate should be.
 							</Form.Description>
 							<Form.FieldErrors />
-						</Form.Field>
-
-						<!-- Number of bans -->
-						<Form.Field
-							{form}
-							name="auto_ban_count"
-							class="flex flex-row items-center justify-between"
-						>
-							<Form.Control let:attrs>
-								<div class="space-y-0.5">
-									<Form.Label>Number of bans</Form.Label>
-									<InputNumber {...attrs} bind:value={$formData.auto_ban_count} min={3} max={50} />
-									<Form.Description>
-										If enabled, you can choose to auto ban the <span class="italic">n</span> most popular
-										champions.
-									</Form.Description>
-								</div>
-							</Form.Control>
 						</Form.Field>
 					{/if}
 				</div>
