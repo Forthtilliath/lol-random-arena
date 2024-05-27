@@ -1,5 +1,10 @@
 <script lang="ts">
-	export let value: number;
+	import type { InputEvents, InputProps } from "./index.js";
+
+	type $$Props = InputProps;
+	type $$Events = InputEvents;
+
+	export let value: $$Props["value"] = undefined;
 </script>
 
 <input
@@ -8,7 +13,11 @@
 	id="quantity-input"
 	data-input-counter
 	aria-describedby="helper-text-explanation"
-	class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+	class="bg-background border-y border-input h-10 text-center text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 block w-full py-2.5"
 	placeholder="999"
+	on:keydown
+	on:input
+	on:wheel
+	{...$$restProps}
 	required
 />
