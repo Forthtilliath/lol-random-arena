@@ -12,38 +12,37 @@ export const RANKS = [
 ] as const;
 
 export const CRITERIAS = ['populars', 'victories', 'mixed'] as const;
-export type Criteria = typeof CRITERIAS[number];
+export type Criteria = (typeof CRITERIAS)[number];
 
 export const criterias: Record<Criteria, string> = {
 	populars: 'Most populars',
 	victories: 'Most victories',
 	mixed: 'Mixed populars and victories'
-}
+};
+
+const playerSchema = z.string().min(1);
 
 export const formSchema = z.object({
-	random_team: z.boolean().default(false),
-	player_1: z.string(),
-	player_2: z.string(),
-	player_3: z.string(),
-	player_4: z.string(),
-	player_5: z.string(),
-	player_6: z.string(),
-	player_7: z.string(),
-	player_8: z.string(),
-	player_9: z.string(),
-	player_10: z.string(),
-	player_11: z.string(),
-	player_12: z.string(),
-	player_13: z.string(),
-	player_14: z.string(),
-	player_15: z.string(),
-	player_16: z.string(),
-	// rank: z
-	// 	.enum(['Iron+', 'Bronze+', 'Silver+', 'Gold+', 'Platinum+', 'Emerald+', 'Diamond+', 'Master+'])
-	// 	.default('Platinum+'),
+	random_team: z.boolean().default(true),
+	player_1: playerSchema.default('Player 1'),
+	player_2: playerSchema.default('Player 2'),
+	player_3: playerSchema.default('Player 3'),
+	player_4: playerSchema.default('Player 4'),
+	player_5: playerSchema.default('Player 5'),
+	player_6: playerSchema.default('Player 6'),
+	player_7: playerSchema.default('Player 7'),
+	player_8: playerSchema.default('Player 8'),
+	player_9: playerSchema.default('Player 9'),
+	player_10: playerSchema.default('Player 10'),
+	player_11: playerSchema.default('Player 11'),
+	player_12: playerSchema.default('Player 12'),
+	player_13: playerSchema.default('Player 13'),
+	player_14: playerSchema.default('Player 14'),
+	player_15: playerSchema.default('Player 15'),
+	player_16: playerSchema.default('Player 16'),
 	rank: z.enum(RANKS).default('platinum'),
 	auto_ban: z.boolean().default(false),
-	auto_ban_count: z.number().default(5),
+	auto_ban_count: z.number().default(8),
 	auto_ban_most: z.enum(CRITERIAS).default('populars')
 });
 

@@ -1,5 +1,6 @@
 <script lang="ts">
-	import SuperDebug, { type Infer, type SuperValidated, superForm } from 'sveltekit-superforms';
+	import type { PageData } from './$types.js';
+	import SuperDebug, { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
 	import { browser } from '$app/environment';
@@ -35,7 +36,7 @@
 	// });
 	// $: console.log(champions);
 
-	export let data;
+	export let data: PageData;
 
 	const form = superForm(data.form, {
 		validators: zodClient(formSchema),
@@ -52,7 +53,7 @@
 		return `player_${n + 1}` as FormSchemaKey;
 	}
 
-	const { form: formData, enhance } = form;
+	const { form: formData, enhance, submitting } = form;
 
 	$: selectedMost = $formData.auto_ban_most
 		? {
@@ -204,11 +205,17 @@
 				</div>
 			</Fieldset>
 
-			{#if browser}
-				<SuperDebug data={$formData} />
+			{#if $submitting}
+				<Form.Button disabled={$submitting}>Submitting...</Form.Button>
+			{:else if $formData.random_team}
+				<Form.Button>Generate teams & Choose champions Randomly</Form.Button>
+			{:else}
+				<Form.Button>Choose champions Randomly</Form.Button>
 			{/if}
-
-			<Form.Button>Submit</Form.Button>
 		</form>
 	</Fieldset>
 </div>
+
+{#if browser}
+	<SuperDebug data={$formData} />
+{/if}
