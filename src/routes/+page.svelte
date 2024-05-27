@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PageData } from './$types.js';
+	import type { PageData, SubmitFunction } from './$types.js';
 	import SuperDebug, { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
@@ -7,20 +7,13 @@
 
 	import * as Form from '$lib/components/ui/form';
 	import * as Select from '$lib/components/ui/select';
-	import { onMount } from 'svelte';
 	import { InputNumber } from '$lib/components/input-number';
-	// import { Input } from '$lib/components/input-with-label';
 	import { Fieldset } from '$lib/components/fieldset';
-	import { type Champion, getChampions } from '$lib/helpers/getChampions';
-	// import { Switch } from '$lib/components/switch-with-label';
 	import { Switch } from '$lib/components/ui/switch';
 	import { criterias, RANKS, formSchema, type FormSchemaKey } from './schema';
 	import { Input } from '$lib/components/ui/input';
 	import { capitalize } from '$lib/helpers/capitalize';
-
-	// export let data;
-
-	let champions: Champion[] = [];
+	import * as Card from '$lib/components/ui/card';
 
 	/**
 	 * Put player names (input with + to add one more)
@@ -30,11 +23,6 @@
 	 * Number of choice par player
 	 * Export settings ?
 	 */
-
-	// onMount(async () => {
-	// 	champions = await getChampions(data.html);
-	// });
-	// $: console.log(champions);
 
 	export let data: PageData;
 
@@ -46,6 +34,12 @@
 			} else {
 				toast.error('Please fix the errors in the form.');
 			}
+		},
+		onResult: ({ result }) => {
+			console.log(result);
+			if (result.type === 'success') {
+				teams = result?.data?.teams;
+			}
 		}
 	});
 
@@ -54,6 +48,7 @@
 	}
 
 	const { form: formData, enhance, submitting } = form;
+	let teams: Player[][] = [];
 
 	$: selectedMost = $formData.auto_ban_most
 		? {
@@ -68,6 +63,13 @@
 				value: $formData.rank
 			}
 		: undefined;
+
+	// const handleSubmit: SubmitFunction = (a) => {
+	// 	console.log(a);
+	// 	return ({ result }) => {
+	// 		console.log(result);
+	// 	};
+	// };
 </script>
 
 <div class="container">
@@ -214,6 +216,25 @@
 			{/if}
 		</form>
 	</Fieldset>
+</div>
+
+<div class="container">
+	{#if teams.length > 0}
+		<div class="grid grid-cols-4 gap-8">
+			{#each teams as team, i}
+				<Card.Root class="bg-foreground/5">
+					<Card.Header>
+						<Card.Title class="text-3xl">Team {i + 1}</Card.Title>
+					</Card.Header>
+					<Card.Content class="space-y-2">
+						{#each team as player}
+							<p><span class="font-bold">{player.name}:</span> {player.champion}</p>
+						{/each}
+					</Card.Content>
+				</Card.Root>
+			{/each}
+		</div>
+	{/if}
 </div>
 
 {#if browser}

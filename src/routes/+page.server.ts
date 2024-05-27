@@ -10,11 +10,12 @@ import { CHAMPIONS, type Champion } from '$lib/data';
 export const load: PageServerLoad = async () => {
 	// const html = await fetch('https://www.leagueofgraphs.com/fr/champions/builds/master/arena').then(
 	// 	(r) => r.text()
-	// );
+	// ); 
 
 	return {
 		// html,
-		form: await superValidate(zod(formSchema))
+		form: await superValidate(zod(formSchema)),
+		teams: [] as Player[][]
 	};
 };
 
@@ -26,15 +27,8 @@ export const actions: Actions = {
 				form
 			});
 		}
-		// await new Promise((r) => setTimeout(r, 2000));
 
 		const { data } = form;
-
-		// type Player = string;
-		type Player = {
-			name: string;
-			champion?: Champion['name'];
-		};
 
 		let players: Player[] = Object.entries(data)
 			.filter(([k]) => k.startsWith('player_'))
