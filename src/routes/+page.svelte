@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PageData, SubmitFunction } from './$types.js';
+	import type { PageData } from './$types.js';
 	import SuperDebug, { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
@@ -10,7 +10,12 @@
 	import { InputNumber } from '$lib/components/input-number';
 	import { Fieldset } from '$lib/components/fieldset';
 	import { Switch } from '$lib/components/ui/switch';
-	import { criterias, RANKS, formSchema, type FormSchemaKey } from './schema';
+	import {
+		criterias,
+		RANKS,
+		formSchema,
+		type FormSchemaKey,
+	} from './schema';
 	import { Input } from '$lib/components/ui/input';
 	import { capitalize } from '$lib/helpers/capitalize';
 	import * as Card from '$lib/components/ui/card';
@@ -28,15 +33,16 @@
 
 	const form = superForm(data.form, {
 		validators: zodClient(formSchema),
+		invalidateAll: false,
+		// resetForm: false, // Not working !!!
 		onUpdated: ({ form: f }) => {
 			if (f.valid) {
-				toast.success(`You submitted ${JSON.stringify(f.data, null, 2)}`);
+				toast.info('Submitted!');
 			} else {
 				toast.error('Please fix the errors in the form.');
 			}
 		},
 		onResult: ({ result }) => {
-			console.log(result);
 			if (result.type === 'success') {
 				teams = result?.data?.teams;
 			}
@@ -50,7 +56,7 @@
 	const { form: formData, enhance, submitting } = form;
 	let teams: Player[][] = [];
 
-	$: selectedMost = $formData.auto_ban_most
+	$: selectedCriteria = $formData.auto_ban_most
 		? {
 				label: criterias[$formData.auto_ban_most],
 				value: $formData.auto_ban_most
@@ -63,13 +69,6 @@
 				value: $formData.rank
 			}
 		: undefined;
-
-	// const handleSubmit: SubmitFunction = (a) => {
-	// 	console.log(a);
-	// 	return ({ result }) => {
-	// 		console.log(result);
-	// 	};
-	// };
 </script>
 
 <div class="container">
@@ -157,7 +156,7 @@
 							<Form.Control let:attrs>
 								<Form.Label>Criteria to auto ban</Form.Label>
 								<Select.Root
-									selected={selectedMost}
+									selected={selectedCriteria}
 									onSelectedChange={(v) => {
 										v && ($formData.auto_ban_most = v.value);
 									}}
@@ -237,6 +236,6 @@
 	{/if}
 </div>
 
-{#if browser}
+<!-- {#if browser}
 	<SuperDebug data={$formData} />
-{/if}
+{/if} -->
