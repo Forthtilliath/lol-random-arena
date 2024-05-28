@@ -10,12 +10,7 @@
 	import { InputNumber } from '$lib/components/input-number';
 	import { Fieldset } from '$lib/components/fieldset';
 	import { Switch } from '$lib/components/ui/switch';
-	import {
-		criterias,
-		RANKS,
-		formSchema,
-		type FormSchemaKey,
-	} from './schema';
+	import { criterias, RANKS, formSchema, type FormSchemaKey } from './schema';
 	import { Input } from '$lib/components/ui/input';
 	import { capitalize } from '$lib/helpers/capitalize';
 	import * as Card from '$lib/components/ui/card';
@@ -34,7 +29,7 @@
 	const form = superForm(data.form, {
 		validators: zodClient(formSchema),
 		invalidateAll: false,
-		// resetForm: false, // Not working !!!
+		resetForm: false,
 		onUpdated: ({ form: f }) => {
 			if (f.valid) {
 				toast.info('Submitted!');
@@ -165,9 +160,9 @@
 										<Select.Value placeholder="Select a criteria" />
 									</Select.Trigger>
 									<Select.Content>
-										<Select.Item value="populars" label="Most populars" />
-										<Select.Item value="victories" label="Most victories" />
-										<Select.Item value="mixed" label="Mixed populars and victories" />
+										<Select.Item value="popularity" label="By popularity" />
+										<Select.Item value="winrate" label="By winrate" />
+										<Select.Item value="mixed" label="Mixed popularity and winrate" />
 									</Select.Content>
 								</Select.Root>
 								<input hidden bind:value={$formData.auto_ban_most} name={attrs.name} />

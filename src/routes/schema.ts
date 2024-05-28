@@ -11,13 +11,13 @@ export const RANKS = [
 	'master'
 ] as const;
 
-export const CRITERIAS = ['populars', 'victories', 'mixed'] as const;
+export const CRITERIAS = ['popularity', 'winrate', 'mixed'] as const;
 export type Criteria = (typeof CRITERIAS)[number];
 
 export const criterias: Record<Criteria, string> = {
-	populars: 'Most populars',
-	victories: 'Most victories',
-	mixed: 'Mixed populars and victories'
+	popularity: 'By popularity',
+	winrate: 'By winrate',
+	mixed: 'Mixed popularity and winrate'
 };
 
 const playerSchema = z.string().min(1);
@@ -43,7 +43,7 @@ export const formSchema = z.object({
 	rank: z.enum(RANKS).default('platinum'),
 	auto_ban: z.boolean().default(false),
 	auto_ban_count: z.number().min(0).max(170).default(8),
-	auto_ban_most: z.enum(CRITERIAS).default('populars')
+	auto_ban_most: z.enum(CRITERIAS).default('popularity')
 });
 
 export type FormSchema = typeof formSchema;

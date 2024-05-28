@@ -5,15 +5,10 @@ import type { Actions, PageServerLoad } from './$types.js';
 import { fail } from '@sveltejs/kit';
 import { chunk, shuffle } from '$lib/helpers/array';
 import { CHAMPIONS, type Champion } from '$lib/data';
-import { getPlayers, getRandomChampion } from '$lib/helpers/actions';
+import { getChampionsRate, getPlayers, getRandomChampion } from '$lib/helpers/actions';
 
 export const load: PageServerLoad = async () => {
-	// const html = await fetch('https://www.leagueofgraphs.com/fr/champions/builds/master/arena').then(
-	// 	(r) => r.text()
-	// ); 
-
 	return {
-		// html,
 		form: await superValidate(zod(formSchema)),
 		teams: [] as Player[][]
 	};
@@ -30,18 +25,27 @@ export const actions: Actions = {
 
 		const { data } = form;
 
+		// Generate teams
 		let players: Player[] = getPlayers(data);
 		if (data.random_team) players = shuffle(players);
 		const teams: Player[][] = chunk(players, 2);
 
+		// Fetch champions to ban
+		let championsLeft = CHAMPIONS;
+		if (data.auto_ban) {
+			const champions = await getChampionsRate(data.rank, data.auto_ban_most === 'winrate');
+			console.log(champions)
+		}
+
+		// Pick random champion for each team
 		const championsPicked = new Set<Champion['id']>();
 		for (const team of teams) {
-			const champion = getRandomChampion(CHAMPIONS);
+			const champion = getRandomChampion(championsLeft);
 			championsPicked.add(champion.id);
 			team[0].champion = champion.name;
 		}
 
-		const championsLeft = CHAMPIONS.filter((c) => !championsPicked.has(c.id));
+		championsLeft = CHAMPIONS.filter((c) => !championsPicked.has(c.id));
 		for (const team of teams) {
 			const champion = getRandomChampion(championsLeft);
 			team[1].champion = champion.name;

@@ -1,4 +1,5 @@
 import { type Champion } from '$lib/data';
+import { getChampions } from './getChampions';
 import { getRandomNumber } from './number';
 
 /**
@@ -23,4 +24,16 @@ export function getPlayers<T extends Record<string, Primitive>>(data: T): { name
 export function getRandomChampion(listChampions: Readonly<Champion[]>): Champion {
 	const championIndex = getRandomNumber(0, listChampions.length - 1);
 	return listChampions[championIndex];
+}
+
+export function getPath(rank: string, byWinrate: boolean = false) {
+	return `https://www.leagueofgraphs.com/fr/champions/builds/${rank}/arena${byWinrate ? '/by-winrate' : ''}`;
+}
+
+export async function getChampionsRate(rank: string, byWinrate = false) {
+	const html = await fetch(getPath(rank, byWinrate)).then(
+		(r) => r.text()
+  );
+
+  return getChampions(html);
 }
