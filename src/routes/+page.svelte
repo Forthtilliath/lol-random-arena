@@ -167,6 +167,7 @@
 							<Form.Control let:attrs>
 								<Form.Label>Criteria to auto ban</Form.Label>
 								<Select.Root
+									preventScroll={false}
 									selected={selectedCriteria}
 									onSelectedChange={(v) => {
 										v && ($formData.auto_ban_most = v.value);
@@ -192,6 +193,7 @@
 							<Form.Control let:attrs>
 								<Form.Label>Rank</Form.Label>
 								<Select.Root
+									preventScroll={false}
 									selected={selectedRank}
 									onSelectedChange={(v) => {
 										v && ($formData.rank = v.value);
