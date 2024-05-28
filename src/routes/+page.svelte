@@ -71,7 +71,7 @@
 <div class="container">
 	<h1 class="text-5xl font-bold text-center mt-4 mb-8">Welcome to LOL Nuclear Random Arena !</h1>
 
-	<Fieldset legend="Players">
+	<Fieldset legend="Players settings">
 		<form method="post" use:enhance class="mx-auto space-y-4">
 			<!-- Random Team -->
 			<Form.Field
