@@ -454,7 +454,7 @@ export const CHAMPIONS: ReadonlyArray<Champion> = Object.freeze([
 	},
 	{
 		id: 147,
-		name: 'Sé9raphine'
+		name: 'Séraphine'
 	},
 	{
 		id: 150,
