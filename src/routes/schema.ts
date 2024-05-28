@@ -42,10 +42,10 @@ export const formSchema = z.object({
 	player_16: playerSchema.default('Player 16'),
 	rank: z.enum(RANKS).default('platinum'),
 	auto_ban: z.boolean().default(false),
-	auto_ban_count: z.number().default(8),
+	auto_ban_count: z.number().min(0).max(170).default(8),
 	auto_ban_most: z.enum(CRITERIAS).default('populars')
 });
 
 export type FormSchema = typeof formSchema;
-type FormSchemaType = z.infer<FormSchema>;
+export type FormSchemaType = z.infer<FormSchema>;
 export type FormSchemaKey = keyof FormSchemaType;

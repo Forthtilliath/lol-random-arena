@@ -4,6 +4,12 @@ export type Champion = {
 	victory: number;
 };
 
+/**
+ * Retrieves a list of champions from the provided HTML string.
+ *
+ * @param {string} html - The HTML string containing the champions data.
+ * @return {Promise<Champion[]>} A promise that resolves to an array of Champion objects.
+ */
 export async function getChampions(html: string): Promise<Champion[]> {
 	const feedDocument = new DOMParser().parseFromString(html, 'text/html');
 	const champions$ = Array.from<HTMLTableRowElement>(
