@@ -1,10 +1,25 @@
 <script lang="ts">
 	export let legend: string;
+	export let hideable: boolean = false;
+	export let visible: boolean = true;
+
+	function toggle() {
+		visible = !visible;
+	}
 </script>
 
 <fieldset>
-	<legend>{legend}</legend>
-	<slot />
+	<legend>
+		{#if hideable}
+			<button on:click={toggle}>{legend}</button>
+		{:else}
+			{legend}
+		{/if}
+	</legend>
+
+	{#if visible}
+		<slot />
+	{/if}
 </fieldset>
 
 <style lang="scss">

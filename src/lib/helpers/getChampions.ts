@@ -36,14 +36,6 @@ export async function getChampions(html: string): Promise<ChampionWithRates[]> {
 			winrate: Number(victory[3])
 		});
 	}
-	console.log(champions);
-
-	/**
-	 * Put player names
-	 * Ban most X popular champions
-	 * Choose rank
-	 * Number of choice par player
-	 */
 
 	return champions;
 }

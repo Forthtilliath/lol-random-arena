@@ -10,6 +10,7 @@ export const RANKS = [
 	'diamond',
 	'master'
 ] as const;
+export type Rank = (typeof RANKS)[number];
 
 export const CRITERIAS = ['popularity', 'winrate', 'mixed'] as const;
 export type Criteria = (typeof CRITERIAS)[number];

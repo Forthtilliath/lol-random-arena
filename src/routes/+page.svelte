@@ -1,28 +1,32 @@
 <script lang="ts">
-	import type { PageData } from './$types.js';
-	import SuperDebug, { superForm } from 'sveltekit-superforms';
+	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
-	import { browser } from '$app/environment';
 
 	import * as Form from '$lib/components/ui/form';
 	import * as Select from '$lib/components/ui/select';
+	import * as Card from '$lib/components/ui/card';
 	import { InputNumber } from '$lib/components/input-number';
 	import { Fieldset } from '$lib/components/fieldset';
 	import { Switch } from '$lib/components/ui/switch';
-	import { criterias, RANKS, formSchema, type FormSchemaKey } from './schema';
 	import { Input } from '$lib/components/ui/input';
+
 	import { capitalize } from '$lib/helpers/capitalize';
-	import * as Card from '$lib/components/ui/card';
 	import { CHAMPIONS } from '$lib/data.js';
 	import { MIN_NON_BANNED_CHAMPIONS } from '$lib/options.const.js';
 
+	import {
+		criterias,
+		RANKS,
+		formSchema,
+		type FormSchemaKey,
+		type Criteria,
+		type Rank
+	} from './schema';
+	import type { PageData } from './$types.js';
+
 	/**
-	 * Put player names (input with + to add one more)
 	 * Save in local storage
-	 * Ban most X popular champions
-	 * Choose rank
-	 * Number of choice par player
 	 * Export settings ?
 	 */
 
@@ -42,6 +46,7 @@
 		onResult: ({ result }) => {
 			if (result.type === 'success') {
 				teams = result?.data?.teams;
+				playersSettingsVisible = false;
 			}
 		}
 	});
@@ -52,6 +57,10 @@
 
 	const { form: formData, enhance, submitting } = form;
 	let teams: Player[][] = [];
+
+	let selectedCriteria: SelectOption<Criteria> | undefined;
+	let selectedRank: SelectOption<Rank> | undefined;
+	let playersSettingsVisible = true;
 
 	$: selectedCriteria = $formData.auto_ban_most
 		? {
@@ -71,7 +80,7 @@
 <div class="container">
 	<h1 class="text-5xl font-bold text-center mt-4 mb-8">Welcome to LOL Nuclear Random Arena !</h1>
 
-	<Fieldset legend="Players settings">
+	<Fieldset legend="Players settings" hideable visible={playersSettingsVisible}>
 		<form method="post" use:enhance class="mx-auto space-y-4">
 			<!-- Random Team -->
 			<Form.Field
@@ -237,7 +246,3 @@
 		</div>
 	{/if}
 </div>
-
-<!-- {#if browser}
-	<SuperDebug data={$formData} />
-{/if} -->
