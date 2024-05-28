@@ -53,13 +53,12 @@
 	}
 </script>
 
-<div>
-	<!-- <label for="quantity-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-		Choose quantity:
-	</label> -->
-	<div class="relative flex items-center max-w-[8rem]">
-		<Button variant="minus" on:click={decrement} disabled={isDisabled(value, min, (a, b) => a <= b)} />
-		<Input bind:value {min} {max} on:keydown={onKeyDown} on:input={onInput} />
-		<Button variant="plus" on:click={increment} disabled={isDisabled(value, max, (a, b) => a >= b)} />
-	</div>
+<div class="relative flex items-center max-w-[8rem]">
+	<Button
+		variant="minus"
+		on:click={decrement}
+		disabled={isDisabled(value, min, (a, b) => a <= b)}
+	/>
+	<Input bind:value {min} {max} on:keydown={onKeyDown} on:input={onInput} {...$$restProps} />
+	<Button variant="plus" on:click={increment} disabled={isDisabled(value, max, (a, b) => a >= b)} />
 </div>

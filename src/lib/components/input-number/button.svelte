@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { cn } from '$lib/utils.js';
-	import { buttonVariants, type Events, type Props } from './index.js';
-	type $$Props = Props;
-	type $$Events = Events;
+	import { buttonVariants, type ButtonEvents, type ButtonProps } from './index.js';
+	type $$Props = ButtonProps;
+	type $$Events = ButtonEvents;
 
 	export let variant: $$Props['variant'];
 	export let disabled: $$Props['disabled'] = false;

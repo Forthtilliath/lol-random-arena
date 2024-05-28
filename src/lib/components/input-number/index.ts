@@ -1,6 +1,7 @@
 import type { HTMLInputAttributes } from 'svelte/elements';
 import Root from './input-number.svelte';
 import { type VariantProps, tv } from 'tailwind-variants';
+import type { ControlSlotProps } from 'formsnap';
 
 export const buttonVariants = tv({
 	base: 'h-10 border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-foreground/10',
@@ -23,11 +24,12 @@ type ButtonProps = {
 	variant: Variant;
 	disabled?: boolean;
 };
-type InputProps = HTMLInputAttributes & {
-	value?: number;
-	min?: number;
-	max?: number;
-};
+type InputProps = HTMLInputAttributes &
+	Partial<ControlSlotProps['attrs']> & {
+		value?: number;
+		min?: number;
+		max?: number;
+	};
 
 export type ButtonEventHandler<T extends Event = Event> = T & {
 	currentTarget: EventTarget & HTMLButtonElement;

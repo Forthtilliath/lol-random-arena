@@ -1,5 +1,5 @@
 import { type Champion } from '$lib/data';
-import { getChampions } from './getChampions';
+import { getChampions, type ChampionWithRates } from './getChampions';
 import { getRandomNumber } from './number';
 
 /**
@@ -31,9 +31,19 @@ export function getPath(rank: string, byWinrate: boolean = false) {
 }
 
 export async function getChampionsRate(rank: string, byWinrate = false) {
-	const html = await fetch(getPath(rank, byWinrate)).then(
-		(r) => r.text()
-  );
+	const html = await fetch(getPath(rank, byWinrate)).then((r) => r.text());
 
-  return getChampions(html);
+	return getChampions(html);
+}
+
+export function sortByPopularity(a: ChampionWithRates, b: ChampionWithRates) {
+	return b.popularity - a.popularity;
+}
+
+export function sortByWinrate(a: ChampionWithRates, b: ChampionWithRates) {
+	return b.winrate - a.winrate;
+}
+
+export function sortByMixed(a: ChampionWithRates, b: ChampionWithRates) {
+	return b.popularity + b.winrate - (a.popularity + a.winrate);
 }

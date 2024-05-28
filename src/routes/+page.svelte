@@ -14,6 +14,8 @@
 	import { Input } from '$lib/components/ui/input';
 	import { capitalize } from '$lib/helpers/capitalize';
 	import * as Card from '$lib/components/ui/card';
+	import { CHAMPIONS } from '$lib/data.js';
+	import { MIN_NON_BANNED_CHAMPIONS } from '$lib/options.const.js';
 
 	/**
 	 * Put player names (input with + to add one more)
@@ -137,7 +139,12 @@
 							<Form.Control let:attrs>
 								<div class="space-y-0.5">
 									<Form.Label>Number of bans</Form.Label>
-									<InputNumber {...attrs} bind:value={$formData.auto_ban_count} min={1} max={170} />
+									<InputNumber
+										{...attrs}
+										bind:value={$formData.auto_ban_count}
+										min={1}
+										max={CHAMPIONS.length - MIN_NON_BANNED_CHAMPIONS}
+									/>
 									<Form.Description>
 										If enabled, you can choose to auto ban the <span class="italic">n</span> most popular
 										champions.

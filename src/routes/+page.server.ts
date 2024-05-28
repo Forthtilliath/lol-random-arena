@@ -5,7 +5,8 @@ import type { Actions, PageServerLoad } from './$types.js';
 import { fail } from '@sveltejs/kit';
 import { chunk, shuffle } from '$lib/helpers/array';
 import { CHAMPIONS, type Champion } from '$lib/data';
-import { getChampionsRate, getPlayers, getRandomChampion } from '$lib/helpers/actions';
+import { getChampionsRate, getPlayers, getRandomChampion, sortByMixed } from '$lib/helpers/actions';
+import type { ChampionWithRates } from '$lib/helpers/getChampions';
 
 export const load: PageServerLoad = async () => {
 	return {
@@ -33,8 +34,22 @@ export const actions: Actions = {
 		// Fetch champions to ban
 		let championsLeft = CHAMPIONS;
 		if (data.auto_ban) {
-			const champions = await getChampionsRate(data.rank, data.auto_ban_most === 'winrate');
-			console.log(champions)
+			let champions: ChampionWithRates[] = await getChampionsRate(
+				data.rank,
+				data.auto_ban_most === 'winrate'
+			);
+
+			if (data.auto_ban_most === 'mixed') {
+				champions = champions.toSorted(sortByMixed);
+			}
+
+			const championsBanned = champions.slice(0, data.auto_ban_count);
+
+			championsLeft = CHAMPIONS.filter(
+				(c) => !championsBanned.map((c) => c.name.replace('\\', '')).includes(c.slug)
+			);
+
+			// CHAMPIONS.length - MIN_NON_BANNED_CHAMPIONS
 		}
 
 		// Pick random champion for each team
