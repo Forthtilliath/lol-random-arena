@@ -1,1 +1,0 @@
-export const MIN_NON_BANNED_CHAMPIONS = 16;

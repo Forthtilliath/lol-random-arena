@@ -1,10 +1,36 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
-	import { Input } from '$lib/components/ui/input';
-	import { Label } from '$lib/components/ui/label';
 
-	import { Upload } from 'lucide-svelte';
+	import { Check, Save, ChevronsUpDown, Upload } from 'lucide-svelte';
+	import { LS_KEY } from '$lib/constants';
+	import Input from '../ui/input/input.svelte';
+	import { writable } from 'svelte/store';
+
+	let saveNames: string[] = ['abc'];
+	onMount(() => {
+		if (localStorage.getItem(LS_KEY)) {
+			saveNames = Object.keys(JSON.parse(localStorage.getItem(LS_KEY)!));
+		}
+	});
+
+	function onSubmit(e: SubmitEvent & { currentTarget: HTMLFormElement }) {
+		const data = Object.fromEntries(new FormData(e.currentTarget));
+		console.log('form submitted', data);
+	}
+
+  function checkIfSavenameExists(name: string) {
+    return saveNames.includes(name);
+  }
+
+  let savenameExists = false;
+  let value = writable('');
+
+  $: savenameExists = checkIfSavenameExists($value);
+  $: console.log($value, savenameExists)
+
+	// https://www.shadcn-svelte.com/docs/components/tooltip
 </script>
 
 <Dialog.Root preventScroll={false}>
@@ -13,23 +39,16 @@
 	</Dialog.Trigger>
 	<Dialog.Content class="sm:max-w-[425px]">
 		<Dialog.Header>
-			<Dialog.Title>Edit profile</Dialog.Title>
-			<Dialog.Description>
-				Make changes to your profile here. Click save when you're done.
-			</Dialog.Description>
+			<Dialog.Title>Load players settings save</Dialog.Title>
+			<Dialog.Description>Choose a name for you save.</Dialog.Description>
 		</Dialog.Header>
-		<div class="grid gap-4 py-4">
-			<div class="grid grid-cols-4 items-center gap-4">
-				<Label for="name" class="text-right">Name</Label>
-				<Input id="name" value="Pedro Duarte" class="col-span-3" />
-			</div>
-			<div class="grid grid-cols-4 items-center gap-4">
-				<Label for="username" class="text-right">Username</Label>
-				<Input id="username" value="@peduarte" class="col-span-3" />
-			</div>
-		</div>
-		<Dialog.Footer>
-			<Button type="submit">Save changes</Button>
-		</Dialog.Footer>
+
+		<form method="post" on:submit|preventDefault={onSubmit} class="mx-auto space-y-4 w-72">
+			<Input type="text" placeholder="Save name" bind:value={$value} class="w-full" />
+
+			<Dialog.Footer>
+				<Button type="submit">Save</Button>
+			</Dialog.Footer>
+		</form>
 	</Dialog.Content>
 </Dialog.Root>

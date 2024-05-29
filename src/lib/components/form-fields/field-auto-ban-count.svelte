@@ -3,7 +3,7 @@
 	import { InputNumber } from '$lib/components/input-number';
 	import { fieldProxy, type FormPathLeaves, type SuperForm } from 'sveltekit-superforms';
 	import { CHAMPIONS } from '$lib/data';
-	import { MIN_NON_BANNED_CHAMPIONS } from '$lib/options.const';
+	import { MIN_NON_BANNED_CHAMPIONS } from '$lib/constants';
 
 	export let form: SuperForm<T>;
 	export let field: FormPathLeaves<T>;
