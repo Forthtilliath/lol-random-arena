@@ -6,15 +6,9 @@
 
 	export let form: SuperForm<T>;
 	export let field: FormPathLeaves<T>;
-	// export let selected: SelectOption<Criteria> | undefined;
 	export let value: Criteria;
 
-	$: selected = value
-		? {
-				label: criterias[value],
-				value: value
-			}
-		: undefined;
+	$: selected = value ? { label: criterias[value], value: value } : undefined;
 </script>
 
 <Form.Field {form} name={field}>

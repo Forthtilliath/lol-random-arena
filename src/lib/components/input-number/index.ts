@@ -24,7 +24,7 @@ type ButtonProps = {
 	variant: Variant;
 	disabled?: boolean;
 };
-type InputProps = HTMLInputAttributes &
+type InputProps = Omit<HTMLInputAttributes, 'value'> &
 	Partial<ControlSlotProps['attrs']> & {
 		value?: number;
 		min?: number;

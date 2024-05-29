@@ -8,15 +8,9 @@
 
 	export let form: SuperForm<T>;
 	export let field: FormPathLeaves<T>;
-	// export let selected: SelectOption<Rank> | undefined;
 	export let value: Rank;
 
-$: selected = value
-	? {
-				label: `${capitalize(value)}+`,
-			value: value
-		}
-	: undefined;
+	$: selected = value ? { label: `${capitalize(value)}+`, value: value } : undefined;
 </script>
 
 <Form.Field {form} name={field}>

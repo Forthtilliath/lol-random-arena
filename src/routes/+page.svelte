@@ -4,7 +4,6 @@
 	import { toast } from 'svelte-sonner';
 
 	import * as Form from '$lib/components/ui/form';
-	import * as Select from '$lib/components/ui/select';
 	import * as Card from '$lib/components/ui/card';
 	import { Fieldset } from '$lib/components/fieldset';
 	import {
@@ -18,7 +17,7 @@
 
 	import { capitalize } from '$lib/helpers/capitalize';
 
-	import { criterias, RANKS, formSchema, type Criteria, type Rank } from './schema';
+	import { formSchema } from './schema';
 	import type { PageData } from './$types.js';
 	import { FORM_PLAYER_KEYS } from '$lib/data';
 
@@ -50,24 +49,7 @@
 
 	const { form: formData, enhance, submitting } = form;
 	let teams: Player[][] = [];
-
-	// let selectedCriteria: SelectOption<Criteria> | undefined;
-	// let selectedRank: SelectOption<Rank> | undefined;
 	let playersSettingsVisible = true;
-
-	// $: selectedCriteria = $formData.auto_ban_criteria
-	// 	? {
-	// 			label: criterias[$formData.auto_ban_criteria],
-	// 			value: $formData.auto_ban_criteria
-	// 		}
-	// 	: undefined;
-
-	// $: selectedRank = $formData.auto_ban_rank
-	// 	? {
-	// 			label: `${capitalize($formData.auto_ban_rank)}+`,
-	// 			value: $formData.auto_ban_rank
-	// 		}
-	// 	: undefined;
 </script>
 
 <div class="container">

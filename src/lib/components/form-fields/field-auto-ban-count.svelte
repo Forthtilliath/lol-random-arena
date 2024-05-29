@@ -1,17 +1,17 @@
 <script lang="ts" generics="T extends Record<string, unknown>">
 	import * as Form from '$lib/components/ui/form';
 	import { InputNumber } from '$lib/components/input-number';
-	import { formFieldProxy, type FormPathLeaves, type SuperForm } from 'sveltekit-superforms';
+	import { fieldProxy, type FormPathLeaves, type SuperForm } from 'sveltekit-superforms';
 	import { CHAMPIONS } from '$lib/data';
 	import { MIN_NON_BANNED_CHAMPIONS } from '$lib/options.const';
 
 	export let form: SuperForm<T>;
 	export let field: FormPathLeaves<T>;
 
-	const { value } = formFieldProxy(form, field);
-  
-  let valueNumber: number;
-  $: valueNumber = Number($value);
+	const proxy = fieldProxy(form, field);
+
+	let valueNumber: number;
+	$: valueNumber = Number($proxy);
 </script>
 
 <Form.Field {form} name={field} class="flex flex-row items-center justify-between">
