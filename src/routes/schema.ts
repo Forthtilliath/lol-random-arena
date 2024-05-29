@@ -44,8 +44,18 @@ export const formSchema = z.object({
 	auto_ban: z.boolean().default(false),
 	auto_ban_count: z.number().min(0).max(170).default(8),
 	auto_ban_criteria: z.enum(CRITERIAS).default('popularity'),
-	auto_ban_rank: z.enum(RANKS).default('platinum'),
+	auto_ban_rank: z.enum(RANKS).default('platinum')
 });
+
+// function getLocalStorageKey(key:string) {
+// 	if (!browser) return;
+// 	console.log('in browser');
+// 	console.log('formData', localStorage.getItem('formData'));
+
+// 	return localStorage.getItem('formData')
+// 		? JSON.parse(localStorage.getItem('formData')!)[key]
+// 		: undefined;
+// }
 
 export type FormSchema = typeof formSchema;
 export type FormSchemaType = z.infer<FormSchema>;

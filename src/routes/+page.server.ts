@@ -25,7 +25,6 @@ export const actions: Actions = {
 		}
 
 		const { data } = form;
-		console.log(data);
 
 		// Generate teams
 		let players: Player[] = getPlayers(data);
@@ -49,8 +48,6 @@ export const actions: Actions = {
 			championsLeft = CHAMPIONS.filter(
 				(c) => !championsBanned.map((c) => c.name.replace('\\', '')).includes(c.slug)
 			);
-
-			// CHAMPIONS.length - MIN_NON_BANNED_CHAMPIONS
 		}
 
 		// Pick random champion for each team
