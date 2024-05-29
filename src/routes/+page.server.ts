@@ -25,6 +25,7 @@ export const actions: Actions = {
 		}
 
 		const { data } = form;
+		console.log(data);
 
 		// Generate teams
 		let players: Player[] = getPlayers(data);
@@ -35,11 +36,11 @@ export const actions: Actions = {
 		let championsLeft = CHAMPIONS;
 		if (data.auto_ban) {
 			let champions: ChampionWithRates[] = await getChampionsRate(
-				data.rank,
-				data.auto_ban_most === 'winrate'
+				data.auto_ban_rank,
+				data.auto_ban_criteria === 'winrate'
 			);
 
-			if (data.auto_ban_most === 'mixed') {
+			if (data.auto_ban_criteria === 'mixed') {
 				champions = champions.toSorted(sortByMixed);
 			}
 

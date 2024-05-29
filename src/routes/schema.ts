@@ -41,10 +41,10 @@ export const formSchema = z.object({
 	player_14: playerSchema.default('Player 14'),
 	player_15: playerSchema.default('Player 15'),
 	player_16: playerSchema.default('Player 16'),
-	rank: z.enum(RANKS).default('platinum'),
 	auto_ban: z.boolean().default(false),
 	auto_ban_count: z.number().min(0).max(170).default(8),
-	auto_ban_most: z.enum(CRITERIAS).default('popularity')
+	auto_ban_criteria: z.enum(CRITERIAS).default('popularity'),
+	auto_ban_rank: z.enum(RANKS).default('platinum'),
 });
 
 export type FormSchema = typeof formSchema;

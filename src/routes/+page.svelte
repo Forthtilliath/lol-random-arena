@@ -6,18 +6,21 @@
 	import * as Form from '$lib/components/ui/form';
 	import * as Select from '$lib/components/ui/select';
 	import * as Card from '$lib/components/ui/card';
-	import { InputNumber } from '$lib/components/input-number';
 	import { Fieldset } from '$lib/components/fieldset';
-	import { Switch } from '$lib/components/ui/switch';
+	import {
+		FieldRandomTeam,
+		FieldPlayerName,
+		FieldAutoBan,
+		FieldAutoBanCount,
+		FieldAutoBanCriteria,
+		FieldAutoBanRank
+	} from '$lib/components/form-fields';
 
 	import { capitalize } from '$lib/helpers/capitalize';
-	import { CHAMPIONS, FORM_PLAYER_KEYS } from '$lib/data.js';
-	import { MIN_NON_BANNED_CHAMPIONS } from '$lib/options.const.js';
 
 	import { criterias, RANKS, formSchema, type Criteria, type Rank } from './schema';
 	import type { PageData } from './$types.js';
-	import { FieldRandomTeam } from '$lib/components/fields';
-	import FieldPlayerName from '$lib/components/fields/field-player-name.svelte';
+	import { FORM_PLAYER_KEYS } from '$lib/data';
 
 	/**
 	 * Save in local storage
@@ -48,27 +51,23 @@
 	const { form: formData, enhance, submitting } = form;
 	let teams: Player[][] = [];
 
-	let selectedCriteria: SelectOption<Criteria> | undefined;
-	let selectedRank: SelectOption<Rank> | undefined;
+	// let selectedCriteria: SelectOption<Criteria> | undefined;
+	// let selectedRank: SelectOption<Rank> | undefined;
 	let playersSettingsVisible = true;
 
-	$: selectedCriteria = $formData.auto_ban_most
-		? {
-				label: criterias[$formData.auto_ban_most],
-				value: $formData.auto_ban_most
-			}
-		: undefined;
+	// $: selectedCriteria = $formData.auto_ban_criteria
+	// 	? {
+	// 			label: criterias[$formData.auto_ban_criteria],
+	// 			value: $formData.auto_ban_criteria
+	// 		}
+	// 	: undefined;
 
-	$: selectedRank = $formData.rank
-		? {
-				label: `${capitalize($formData.rank)}+`,
-				value: $formData.rank
-			}
-		: undefined;
-
-	function nameToLabel(name: string) {
-		return capitalize(name.replace('_', ' '));
-	}
+	// $: selectedRank = $formData.auto_ban_rank
+	// 	? {
+	// 			label: `${capitalize($formData.auto_ban_rank)}+`,
+	// 			value: $formData.auto_ban_rank
+	// 		}
+	// 	: undefined;
 </script>
 
 <div class="container">
@@ -84,105 +83,20 @@
 				{/each}
 			</div>
 
-			<!-- Auto Ban -->
 			<Fieldset legend="Auto Ban">
 				<div class="space-y-4">
-					<Form.Field
-						{form}
-						name="auto_ban"
-						class="flex flex-row items-center justify-between rounded-lg border p-4"
-					>
-						<Form.Control let:attrs>
-							<div class="space-y-0.5">
-								<div class="flex items-center gap-2">
-									<Switch includeInput {...attrs} bind:checked={$formData.auto_ban} />
-									<Form.Label>Auto ban champions</Form.Label>
-								</div>
-								<Form.Description>
-									If enabled, you can choose to auto ban the <span class="italic">n</span> most popular
-									champions.
-								</Form.Description>
-							</div>
-						</Form.Control>
-					</Form.Field>
+					<FieldAutoBan {form} field="auto_ban" />
 
 					{#if $formData.auto_ban}
-						<!-- Number of bans -->
-						<Form.Field
+						<FieldAutoBanCount {form} field="auto_ban_count" />
+
+						<FieldAutoBanCriteria
 							{form}
-							name="auto_ban_count"
-							class="flex flex-row items-center justify-between"
-						>
-							<Form.Control let:attrs>
-								<div class="space-y-0.5">
-									<Form.Label>Number of bans</Form.Label>
-									<InputNumber
-										{...attrs}
-										bind:value={$formData.auto_ban_count}
-										min={1}
-										max={CHAMPIONS.length - MIN_NON_BANNED_CHAMPIONS}
-									/>
-									<Form.Description>
-										If enabled, you can choose to auto ban the <span class="italic">n</span> most popular
-										champions.
-									</Form.Description>
-								</div>
-							</Form.Control>
-						</Form.Field>
+							field="auto_ban_criteria"
+							value={$formData.auto_ban_criteria}
+						/>
 
-						<!-- Criteria -->
-						<Form.Field {form} name="auto_ban_most">
-							<Form.Control let:attrs>
-								<Form.Label>Criteria to auto ban</Form.Label>
-								<Select.Root
-									preventScroll={false}
-									selected={selectedCriteria}
-									onSelectedChange={(v) => {
-										v && ($formData.auto_ban_most = v.value);
-									}}
-								>
-									<Select.Trigger {...attrs}>
-										<Select.Value placeholder="Select a criteria" />
-									</Select.Trigger>
-									<Select.Content>
-										<Select.Item value="popularity" label="By popularity" />
-										<Select.Item value="winrate" label="By winrate" />
-										<Select.Item value="mixed" label="Mixed popularity and winrate" />
-									</Select.Content>
-								</Select.Root>
-								<input hidden bind:value={$formData.auto_ban_most} name={attrs.name} />
-							</Form.Control>
-							<Form.Description>You can choose the criteria to auto ban.</Form.Description>
-							<Form.FieldErrors />
-						</Form.Field>
-
-						<!-- Rank -->
-						<Form.Field {form} name="rank">
-							<Form.Control let:attrs>
-								<Form.Label>Rank</Form.Label>
-								<Select.Root
-									preventScroll={false}
-									selected={selectedRank}
-									onSelectedChange={(v) => {
-										v && ($formData.rank = v.value);
-									}}
-								>
-									<Select.Trigger {...attrs}>
-										<Select.Value placeholder="Select a rank" />
-									</Select.Trigger>
-									<Select.Content>
-										{#each RANKS as rank}
-											<Select.Item value={rank} label={`${capitalize(rank)}+`} />
-										{/each}
-									</Select.Content>
-								</Select.Root>
-								<input hidden bind:value={$formData.rank} name={attrs.name} />
-							</Form.Control>
-							<Form.Description>
-								You can choose from which rank the rate should be.
-							</Form.Description>
-							<Form.FieldErrors />
-						</Form.Field>
+						<FieldAutoBanRank {form} field="auto_ban_rank" value={$formData.auto_ban_rank} />
 					{/if}
 				</div>
 			</Fieldset>
