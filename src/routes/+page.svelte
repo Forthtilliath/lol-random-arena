@@ -9,21 +9,15 @@
 	import { InputNumber } from '$lib/components/input-number';
 	import { Fieldset } from '$lib/components/fieldset';
 	import { Switch } from '$lib/components/ui/switch';
-	import { Input } from '$lib/components/ui/input';
 
 	import { capitalize } from '$lib/helpers/capitalize';
-	import { CHAMPIONS } from '$lib/data.js';
+	import { CHAMPIONS, FORM_PLAYER_KEYS } from '$lib/data.js';
 	import { MIN_NON_BANNED_CHAMPIONS } from '$lib/options.const.js';
 
-	import {
-		criterias,
-		RANKS,
-		formSchema,
-		type FormSchemaKey,
-		type Criteria,
-		type Rank
-	} from './schema';
+	import { criterias, RANKS, formSchema, type Criteria, type Rank } from './schema';
 	import type { PageData } from './$types.js';
+	import { FieldRandomTeam } from '$lib/components/fields';
+	import FieldPlayerName from '$lib/components/fields/field-player-name.svelte';
 
 	/**
 	 * Save in local storage
@@ -51,10 +45,6 @@
 		}
 	});
 
-	function generatePlayerKey(n: number): FormSchemaKey {
-		return `player_${n + 1}` as FormSchemaKey;
-	}
-
 	const { form: formData, enhance, submitting } = form;
 	let teams: Player[][] = [];
 
@@ -75,6 +65,10 @@
 				value: $formData.rank
 			}
 		: undefined;
+
+	function nameToLabel(name: string) {
+		return capitalize(name.replace('_', ' '));
+	}
 </script>
 
 <div class="container">
@@ -82,37 +76,11 @@
 
 	<Fieldset legend="Players settings" hideable visible={playersSettingsVisible}>
 		<form method="post" use:enhance class="mx-auto space-y-4">
-			<!-- Random Team -->
-			<Form.Field
-				{form}
-				name="random_team"
-				class="flex flex-row items-center justify-between rounded-lg border p-4"
-			>
-				<Form.Control let:attrs>
-					<div class="space-y-0.5">
-						<div class="flex items-center gap-2">
-							<Switch includeInput {...attrs} bind:checked={$formData.random_team} />
-							<Form.Label>Randomly assign players in teams</Form.Label>
-						</div>
-						<Form.Description>
-							If disabled, player 1 will be with player 2, player 3 with player 4, etc.
-						</Form.Description>
-					</div>
-				</Form.Control>
-			</Form.Field>
+			<FieldRandomTeam {form} field="random_team" />
 
-			<!-- Players -->
 			<div class="grid grid-cols-2 gap-4">
-				{#each Array(16) as _, n}
-					{@const key = generatePlayerKey(n)}
-
-					<Form.Field {form} name={key}>
-						<Form.Control let:attrs>
-							<Form.Label>Player {n + 1}</Form.Label>
-							<Input {...attrs} bind:value={$formData[key]} />
-						</Form.Control>
-						<Form.FieldErrors />
-					</Form.Field>
+				{#each FORM_PLAYER_KEYS as field}
+					<FieldPlayerName {form} {field} label={capitalize(field.replace('_', ' '))} />
 				{/each}
 			</div>
 
@@ -234,7 +202,7 @@
 	{#if teams.length > 0}
 		<div class="grid grid-cols-4 gap-8">
 			{#each teams as team, i}
-				<Card.Root class="bg-foreground/5">
+				<Card.Root class="odd:bg-foreground/5 even:bg-foreground/10">
 					<Card.Header>
 						<Card.Title class="text-3xl">Team {i + 1}</Card.Title>
 					</Card.Header>
