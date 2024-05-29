@@ -60,7 +60,7 @@
 
 	<Fieldset legend="Players settings" hideable visible={playersSettingsVisible}>
 		<div class="flex gap-4 justify-end -translate-y-4">
-			<DialogSave />
+			<DialogSave settings={$formData} />
 		</div>
 
 		<form method="post" use:enhance class="mx-auto space-y-4">

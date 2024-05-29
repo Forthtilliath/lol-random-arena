@@ -8,32 +8,44 @@
 	import Input from '../ui/input/input.svelte';
 	import { writable } from 'svelte/store';
 
-	let saveNames: string[] = ['abc'];
+	export let settings: Record<string, unknown>;
+
+	let previousSettings: Record<string, unknown> = {};
+	// let saveNames: string[] = ['abc'];
 	onMount(() => {
 		if (localStorage.getItem(LS_KEY)) {
-			saveNames = Object.keys(JSON.parse(localStorage.getItem(LS_KEY)!));
+			previousSettings = JSON.parse(localStorage.getItem(LS_KEY)!);
+			// saveNames = Object.keys(JSON.parse(localStorage.getItem(LS_KEY)!));
 		}
 	});
 
-	function onSubmit(e: SubmitEvent & { currentTarget: HTMLFormElement }) {
-		const data = Object.fromEntries(new FormData(e.currentTarget));
-		console.log('form submitted', data);
+	$: console.log($open);
+
+	function onSubmit() {
+		const newSave = { ...previousSettings, [$value]: settings };
+		localStorage.setItem(LS_KEY, JSON.stringify(newSave));
+		$open = false;
 	}
 
-  function checkIfSavenameExists(name: string) {
-    return saveNames.includes(name);
-  }
+	function checkIfSavenameExists(name: string) {
+		return Object.keys(previousSettings).includes(name);
+	}
 
-  let savenameExists = false;
-  let value = writable('');
+	let open = writable(false);
+	let savenameExists = false;
+	let value = writable('');
 
-  $: savenameExists = checkIfSavenameExists($value);
-  $: console.log($value, savenameExists)
+	$: savenameExists = checkIfSavenameExists($value);
+	$: console.log({ savenameExists });
+
+	function onOpenChange(v: boolean) {
+		$open = v;
+	}
 
 	// https://www.shadcn-svelte.com/docs/components/tooltip
 </script>
 
-<Dialog.Root preventScroll={false}>
+<Dialog.Root open={$open} {onOpenChange} preventScroll={false}>
 	<Dialog.Trigger class={buttonVariants()}>
 		<Upload />
 	</Dialog.Trigger>
