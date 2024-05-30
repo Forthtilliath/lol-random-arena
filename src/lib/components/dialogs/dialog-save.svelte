@@ -33,7 +33,7 @@
 
 	let open = writable(false);
 	let value = writable('');
-	
+
 	let savenameExists = false;
 	$: savenameExists = checkIfSavenameExists($value);
 
@@ -43,7 +43,7 @@
 </script>
 
 <Dialog.Root open={$open} {onOpenChange} preventScroll={false}>
-	<Dialog.Trigger class={cn(buttonVariants(),"flex gap-2")}>
+	<Dialog.Trigger class={cn(buttonVariants(), 'flex gap-2')}>
 		Save <Upload />
 	</Dialog.Trigger>
 	<Dialog.Content class="sm:max-w-[425px]">
@@ -53,16 +53,20 @@
 		</Dialog.Header>
 
 		<form method="post" on:submit|preventDefault={onSubmit} class="mx-auto space-y-4 w-72">
-			<Input
-				type="text"
-				placeholder="Save name"
-				bind:value={$value}
-				class={cn('w-full', {
-					'border-red-500': savenameExists,
-					'border-green-500': !savenameExists && $value
-				})}
-			/>
-			<!-- TODO: Add message -->
+			<div>
+				<Input
+					type="text"
+					placeholder="Save name"
+					bind:value={$value}
+					class={cn('w-full', {
+						'border-red-500': savenameExists,
+						'border-green-500': !savenameExists && $value
+					})}
+				/>
+				{#if savenameExists}
+					<p class="text-red-500 text-sm">Save name already exists</p>
+				{/if}
+			</div>
 
 			<Dialog.Footer>
 				<Button type="submit">Save</Button>
