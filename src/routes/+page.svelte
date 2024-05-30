@@ -23,6 +23,8 @@
 
 	import DialogSave from '$lib/components/dialogs/dialog-save.svelte';
 	import { setCtx } from '$lib/contexts/form-context';
+	import { TEAM_NAMES } from '$lib/constants';
+	import { cn } from '$lib/utils';
 
 	export let data: PageData;
 
@@ -47,7 +49,7 @@
 			}
 		}
 	});
-	
+
 	setCtx(() => $formData);
 
 	const { form: formData, enhance, submitting } = form;
@@ -68,7 +70,7 @@
 		<form method="post" use:enhance class="mx-auto space-y-4">
 			<FieldRandomTeam {form} field="random_team" />
 
-			<div class="grid grid-cols-2 gap-4">
+			<div class="grid grid-cols-players gap-4">
 				{#each FORM_PLAYER_KEYS as field}
 					<FieldPlayerName {form} {field} label={capitalize(field.replace('_', ' '))} />
 				{/each}
@@ -94,8 +96,6 @@
 
 			{#if $submitting}
 				<Form.Button disabled={$submitting}>Submitting...</Form.Button>
-			{:else if $formData.random_team}
-				<Form.Button>Generate teams & Choose champions Randomly</Form.Button>
 			{:else}
 				<Form.Button>Choose champions Randomly</Form.Button>
 			{/if}
@@ -109,11 +109,19 @@
 			{#each teams as team, i}
 				<Card.Root class="odd:bg-foreground/5 even:bg-foreground/10">
 					<Card.Header>
-						<Card.Title class="text-3xl">Team {i + 1}</Card.Title>
+						<Card.Title class="text-4xl text-center">{TEAM_NAMES[i]}</Card.Title>
 					</Card.Header>
-					<Card.Content class="space-y-2">
-						{#each team as player}
-							<p><span class="font-bold">{player.name}:</span> {player.champion}</p>
+					<Card.Content class="space-y-2 text-center">
+						{#each team as player, i}
+							<p class="text-xl font-medium">{player.name}</p>
+							<p
+								class={cn('text-lg font-bold', {
+									'text-green-500': i === 0,
+									'text-red-500': i === 1
+								})}
+							>
+								{player.champion}
+							</p>
 						{/each}
 					</Card.Content>
 				</Card.Root>

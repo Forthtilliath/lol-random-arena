@@ -1,4 +1,4 @@
-import { fontFamily } from "tailwindcss/defaultTheme";
+import { fontFamily, screens } from "tailwindcss/defaultTheme";
 
 /** @type {import('tailwindcss').Config} */
 const config = {
@@ -56,8 +56,15 @@ const config = {
 			},
 			fontFamily: {
 				sans: [...fontFamily.sans]
+			},
+			gridTemplateColumns: {
+				players: "repeat(auto-fill, minmax(160px, 1fr))"
 			}
-		}
+		},
+    screens: {
+      'xs': '475px',
+      ...screens,
+    },
 	},
 };
 
