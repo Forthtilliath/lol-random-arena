@@ -11,7 +11,7 @@
 <fieldset>
 	<legend>
 		{#if hideable}
-			<button on:click={toggle}>{legend}</button>
+			<button on:click={toggle} aria-label="Collapse">{legend}</button>
 		{:else}
 			{legend}
 		{/if}
