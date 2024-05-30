@@ -25,6 +25,7 @@
 	import { setCtx } from '$lib/contexts/form-context';
 	import { TEAM_NAMES } from '$lib/constants';
 	import { cn } from '$lib/utils';
+	import DialogLoad from '$lib/components/dialogs/dialog-load.svelte';
 
 	export let data: PageData;
 
@@ -65,6 +66,7 @@
 	<Fieldset legend="Players settings" hideable visible={playersSettingsVisible}>
 		<div class="flex gap-4 justify-end -translate-y-4">
 			<DialogSave />
+			<DialogLoad {formData} />
 		</div>
 
 		<form method="post" use:enhance class="mx-auto space-y-4">

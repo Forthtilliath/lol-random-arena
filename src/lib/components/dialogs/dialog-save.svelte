@@ -13,23 +13,23 @@
 
 	const { getFormData } = getCtx();
 
-	let previousSettings: Record<string, unknown> = {};
+	let previousSaves: Record<string, unknown> = {};
 	onMount(() => {
 		if (localStorage.getItem(LS_KEY)) {
-			previousSettings = JSON.parse(localStorage.getItem(LS_KEY)!);
+			previousSaves = JSON.parse(localStorage.getItem(LS_KEY)!);
 		}
 	});
 
 	function onSubmit() {
 		const formData = getFormData();
-		const newSave = { ...previousSettings, [$value]: formData };
+		const newSave = { ...previousSaves, [$value]: formData };
 		localStorage.setItem(LS_KEY, JSON.stringify(newSave));
 		$value = '';
 		$open = false;
 	}
 
 	function checkIfSavenameExists(name: string) {
-		return Object.keys(previousSettings).includes(name);
+		return Object.keys(previousSaves).includes(name);
 	}
 
 	let open = writable(false);
@@ -56,7 +56,7 @@
 	</Tooltip.Root>
 	<Dialog.Content class="sm:max-w-[425px]">
 		<Dialog.Header>
-			<Dialog.Title>Load players settings save</Dialog.Title>
+			<Dialog.Title>Save players settings</Dialog.Title>
 			<Dialog.Description>Choose a name for you save.</Dialog.Description>
 		</Dialog.Header>
 
@@ -70,6 +70,7 @@
 					'border-green-500': !savenameExists && $value
 				})}
 			/>
+			<!-- TODO: Add message -->
 
 			<Dialog.Footer>
 				<Button type="submit">Save</Button>
