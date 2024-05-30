@@ -2,30 +2,29 @@
 	import { onMount } from 'svelte';
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
-  import * as Tooltip from "$lib/components/ui/tooltip";
+	import * as Tooltip from '$lib/components/ui/tooltip';
 
-	import { Check, Save, ChevronsUpDown, Upload } from 'lucide-svelte';
+	import { Upload } from 'lucide-svelte';
 	import { LS_KEY } from '$lib/constants';
 	import Input from '../ui/input/input.svelte';
 	import { writable } from 'svelte/store';
 	import { cn } from '$lib/utils';
+	import { getCtx } from '$lib/contexts/form-context';
 
-	export let settings: Record<string, unknown>;
+	const { getFormData } = getCtx();
 
 	let previousSettings: Record<string, unknown> = {};
-	// let saveNames: string[] = ['abc'];
 	onMount(() => {
 		if (localStorage.getItem(LS_KEY)) {
 			previousSettings = JSON.parse(localStorage.getItem(LS_KEY)!);
-			// saveNames = Object.keys(JSON.parse(localStorage.getItem(LS_KEY)!));
 		}
 	});
 
-	$: console.log($open);
-
 	function onSubmit() {
-		const newSave = { ...previousSettings, [$value]: settings };
+		const formData = getFormData();
+		const newSave = { ...previousSettings, [$value]: formData };
 		localStorage.setItem(LS_KEY, JSON.stringify(newSave));
+		$value = '';
 		$open = false;
 	}
 
@@ -34,11 +33,10 @@
 	}
 
 	let open = writable(false);
-	let savenameExists = false;
 	let value = writable('');
-
+	
+	let savenameExists = false;
 	$: savenameExists = checkIfSavenameExists($value);
-	$: console.log({ savenameExists });
 
 	function onOpenChange(v: boolean) {
 		$open = v;

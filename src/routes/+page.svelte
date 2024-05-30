@@ -20,9 +20,9 @@
 	import { formSchema } from './schema';
 	import type { PageData } from './$types.js';
 	import { FORM_PLAYER_KEYS } from '$lib/data';
-	import Button from '$lib/components/ui/button/button.svelte';
 
 	import DialogSave from '$lib/components/dialogs/dialog-save.svelte';
+	import { setCtx } from '$lib/contexts/form-context';
 
 	export let data: PageData;
 
@@ -32,7 +32,7 @@
 		resetForm: false,
 		// onChange: () => {
 		// 	localStorage.setItem('formData', JSON.stringify($formData));
-		// }, 
+		// },
 		onUpdated: ({ form: f }) => {
 			if (f.valid) {
 				toast.info('Submitted!');
@@ -47,6 +47,8 @@
 			}
 		}
 	});
+	
+	setCtx(() => $formData);
 
 	const { form: formData, enhance, submitting } = form;
 	let teams: Player[][] = [];
@@ -60,7 +62,7 @@
 
 	<Fieldset legend="Players settings" hideable visible={playersSettingsVisible}>
 		<div class="flex gap-4 justify-end -translate-y-4">
-			<DialogSave settings={$formData} />
+			<DialogSave />
 		</div>
 
 		<form method="post" use:enhance class="mx-auto space-y-4">
