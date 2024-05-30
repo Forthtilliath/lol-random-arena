@@ -21,7 +21,7 @@
 		}
 	});
 
-	function onSubmit(e: SubmitEvent & { currentTarget: HTMLFormElement }) {
+	function onSubmit() {
 		const save = Object.entries(saves).find(([name]) => name === $selectedSave)?.[1];
 		if (!save) {
 			// TODO: Error message
@@ -67,7 +67,7 @@
 						'text-muted-foreground': !$selectedSave
 					})}
 				>
-					{Object.keys(saves).find((savename) => savename === $selectedSave) || 'Select a save'}
+					{$selectedSave || 'Select a save'}
 					<ChevronsUpDown class="ml-2 size-4 shrink-0 opacity-50" />
 				</Popover.Trigger>
 				<Popover.Content class="w-[200px] p-0 -translate-y-3">
