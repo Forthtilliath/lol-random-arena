@@ -2,7 +2,6 @@
 	import { onMount } from 'svelte';
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
-	import * as Tooltip from '$lib/components/ui/tooltip';
 
 	import { Upload } from 'lucide-svelte';
 	import { LS_KEY } from '$lib/constants';
@@ -44,16 +43,9 @@
 </script>
 
 <Dialog.Root open={$open} {onOpenChange} preventScroll={false}>
-	<Tooltip.Root>
-		<Tooltip.Trigger>
-			<Dialog.Trigger class={buttonVariants()}>
-				<Upload />
-			</Dialog.Trigger>
-		</Tooltip.Trigger>
-		<Tooltip.Content>
-			<p>Save</p>
-		</Tooltip.Content>
-	</Tooltip.Root>
+	<Dialog.Trigger class={cn(buttonVariants(),"flex gap-2")}>
+		Save <Upload />
+	</Dialog.Trigger>
 	<Dialog.Content class="sm:max-w-[425px]">
 		<Dialog.Header>
 			<Dialog.Title>Save players settings</Dialog.Title>

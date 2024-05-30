@@ -1,4 +1,4 @@
-<script lang="ts" generics="T extends Record<string, unknown>">
+<script lang="ts">
 	import { onMount } from 'svelte';
 	import { writable, type Writable } from 'svelte/store';
 	import { Check, Download, ChevronsUpDown } from 'lucide-svelte';
@@ -7,7 +7,6 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Popover from '$lib/components/ui/popover';
 	import * as Command from '$lib/components/ui/command';
-	import * as Tooltip from '$lib/components/ui/tooltip';
 
 	import { formSchema, type FormSchemaType } from '../../../routes/schema';
 	import { LS_KEY } from '$lib/constants';
@@ -51,16 +50,9 @@
 </script>
 
 <Dialog.Root open={$open} {onOpenChange} preventScroll={false}>
-	<Tooltip.Root>
-		<Tooltip.Trigger>
-			<Dialog.Trigger class={buttonVariants()}>
-				<Download />
-			</Dialog.Trigger>
-		</Tooltip.Trigger>
-		<Tooltip.Content>
-			<p>Load</p>
-		</Tooltip.Content>
-	</Tooltip.Root>
+	<Dialog.Trigger class={cn(buttonVariants(),"flex gap-2")}>
+		Load <Download />
+	</Dialog.Trigger>
 	<Dialog.Content class="sm:max-w-[425px]">
 		<Dialog.Header>
 			<Dialog.Title>Load players settings</Dialog.Title>
