@@ -24,7 +24,7 @@
 
 <style lang="scss">
 	fieldset {
-		--color: #007bff;
+		--color: #0071F0;
 		border: 2px solid var(--color);
 		border-radius: 5px;
 		margin-bottom: 20px;

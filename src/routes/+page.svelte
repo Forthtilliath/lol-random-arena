@@ -61,7 +61,7 @@
 </script>
 
 <div class="container">
-	<h1 class="text-5xl font-bold text-center mt-4 mb-8">Welcome to LOL Nuclear Random Arena !</h1>
+	<h1 class="text-5xl font-bold text-center mt-4 mb-8 bg-gradient-to-r from-sky-400 via-sky-200 to-sky-400 bg-clip-text text-transparent">Welcome to LOL Nuclear Random Arena !</h1>
 
 	<Fieldset legend="Players settings" hideable visible={playersSettingsVisible}>
 		<div class="flex gap-4 justify-end -translate-y-4">

@@ -22,7 +22,7 @@
 	<Form.Control let:attrs>
 		<div class="space-y-0.5">
 			<div class="flex items-center gap-2">
-				<Switch includeInput {...attrs} bind:checked={$value} />
+				<Switch includeInput {...attrs} bind:checked={$value} aria-label="Auto ban champions" />
 				<Form.Label>Auto ban champions</Form.Label>
 			</div>
 			<Form.Description>
