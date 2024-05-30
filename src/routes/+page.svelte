@@ -105,7 +105,7 @@
 
 <div class="container">
 	{#if teams.length > 0}
-		<div class="grid grid-cols-4 gap-8">
+		<div class="grid grid-cols-cards gap-8">
 			{#each teams as team, i}
 				<Card.Root class="odd:bg-foreground/5 even:bg-foreground/10">
 					<Card.Header>

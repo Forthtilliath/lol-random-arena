@@ -25,7 +25,7 @@
 				max={CHAMPIONS.length - MIN_NON_BANNED_CHAMPIONS}
 			/>
 			<Form.Description>
-				If enabled, you can choose to auto ban the <span class="italic">n</span> most popular champions.
+				You can choose to auto ban the <span class="italic">n</span> most popular champions.
 			</Form.Description>
 		</div>
 	</Form.Control>
