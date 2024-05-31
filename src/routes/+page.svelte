@@ -19,13 +19,14 @@
 
 	import { formSchema } from './schema';
 	import type { PageData } from './$types.js';
-	import { FORM_PLAYER_KEYS } from '$lib/data';
+	import { FORM_PLAYER_KEYS, type Champion } from '$lib/data';
 
 	import DialogSave from '$lib/components/dialogs/dialog-save.svelte';
 	import { setCtx } from '$lib/contexts/form-context';
 	import { TEAM_NAMES } from '$lib/constants';
 	import { cn } from '$lib/utils';
 	import DialogLoad from '$lib/components/dialogs/dialog-load.svelte';
+	import CardChampion from '$lib/components/card-champion.svelte';
 
 	export let data: PageData;
 
@@ -54,14 +55,29 @@
 	setCtx(() => $formData);
 
 	const { form: formData, enhance, submitting } = form;
-	let teams: Player[][] = [];
+	let teams: PlayerWithChampion[][] = [];
 	let playersSettingsVisible = true;
+
+	function getPathImage(champion: Champion) {
+		const image =
+			champion?.image ??
+			champion.name
+				.replace(/[éê]/g, 'e')
+				.replace(/[î]/g, 'i')
+				.replace(/[ '\.]/g, '');
+
+		return `/champion/${image}.png`;
+	}
 
 	// $: browser && localStorage.setItem('formData', JSON.stringify($formData));
 </script>
 
 <div class="container">
-	<h1 class="text-5xl font-bold text-center mt-4 mb-8 bg-gradient-to-r from-sky-400 via-sky-200 to-sky-400 bg-clip-text text-transparent">Welcome to LOL Nuclear Random Arena !</h1>
+	<h1
+		class="text-5xl font-bold text-center mt-4 mb-8 bg-gradient-to-r from-sky-400 via-sky-200 to-sky-400 bg-clip-text text-transparent"
+	>
+		Welcome to LOL Nuclear Random Arena !
+	</h1>
 
 	<Fieldset legend="Players settings" hideable visible={playersSettingsVisible}>
 		<div class="flex gap-4 justify-end -translate-y-4">
@@ -113,9 +129,9 @@
 					<Card.Header>
 						<Card.Title class="text-4xl text-center">{TEAM_NAMES[i]}</Card.Title>
 					</Card.Header>
-					<Card.Content class="space-y-2 text-center">
+					<Card.Content class="text-center flex gap-2">
 						{#each team as player, i}
-							<p class="text-xl font-medium">{player.name}</p>
+							<!-- <p class="text-xl font-medium">{player.name}</p>
 							<p
 								class={cn('text-lg font-bold', {
 									'text-green-500': i === 0,
@@ -123,7 +139,8 @@
 								})}
 							>
 								{player.champion}
-							</p>
+							</p> -->
+							<CardChampion {player} />
 						{/each}
 					</Card.Content>
 				</Card.Root>

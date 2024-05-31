@@ -29,7 +29,7 @@ export const actions: Actions = {
 		// Generate teams
 		let players: Player[] = getPlayers(data);
 		if (data.random_team) players = shuffle(players);
-		const teams: Player[][] = chunk(players, 2);
+		const teams: Partial<PlayerWithChampion>[][] = chunk(players, 2);
 
 		// Fetch champions to ban
 		let championsLeft = CHAMPIONS;
@@ -55,18 +55,18 @@ export const actions: Actions = {
 		for (const team of teams) {
 			const champion = getRandomChampion(championsLeft);
 			championsPicked.add(champion.id);
-			team[0].champion = champion.name;
+			team[0].champion = champion;
 		}
 
 		championsLeft = CHAMPIONS.filter((c) => !championsPicked.has(c.id));
 		for (const team of teams) {
 			const champion = getRandomChampion(championsLeft);
-			team[1].champion = champion.name;
+			team[1].champion = champion;
 		}
 
 		return {
 			form,
-			teams
+			teams: teams as PlayerWithChampion[][]
 		};
 	}
 };

@@ -7,7 +7,9 @@ declare global {
 
 	type Player = {
 		name: string;
-		champion?: Champion['name'];
+	};
+	type PlayerWithChampion = Player & {
+		champion: Champion;
 	};
 }
 
