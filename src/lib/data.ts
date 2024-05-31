@@ -2,6 +2,7 @@ export type Champion = {
 	id: number;
 	slug: string;
 	name: string;
+	image?: string;
 };
 
 export const CHAMPIONS: ReadonlyArray<Champion> = Object.freeze([
@@ -165,7 +166,7 @@ export const CHAMPIONS: ReadonlyArray<Champion> = Object.freeze([
 	{ id: 875, slug: 'Sett', name: 'Sett' },
 	{ id: 876, slug: 'Lillia', name: 'Lillia' },
 	{ id: 887, slug: 'Gwen', name: 'Gwen' },
-	{ id: 888, slug: 'RenataGlasc', name: 'Renata Glasc' },
+	{ id: 888, slug: 'RenataGlasc', name: 'Renata Glasc', image: 'Renata' },
 	{ id: 895, slug: 'Nilah', name: 'Nilah' },
 	{ id: 897, slug: "K'Santé", name: "K'Santé" },
 	{ id: 901, slug: 'Smolder', name: 'Smolder' },
