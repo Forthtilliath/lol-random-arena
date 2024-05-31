@@ -36,9 +36,9 @@
 			class="mx-auto w-full aspect-square"
 		/>
 		<div class="absolute w-full h-full top-0 bg-black/80"></div>
-		<div class="absolute w-full h-full top-0 grid place-items-center">
-			<p class="text-base font-medium break-all">{player.name}</p>
-			<p class="text-base font-semibold break-all">{player.champion.name}</p>
+		<div class="absolute w-full h-full top-0 grid place-items-center px-2">
+			<p class="font-medium break-words">fytf tf tf {player.name}</p>
+			<p class="font-semibold break-words">{player.champion.name}</p>
 		</div>
 	{:else}
     <Skeleton class="mx-auto w-full aspect-square" />
