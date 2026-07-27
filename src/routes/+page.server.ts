@@ -1,6 +1,6 @@
-import { superValidate } from 'sveltekit-superforms';
+import { superValidate } from 'sveltekit-superforms/server';
 import { formSchema } from './schema';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types.js';
 import { fail } from '@sveltejs/kit';
 import { chunk, shuffle } from '$lib/helpers/array';
@@ -10,14 +10,14 @@ import type { ChampionWithRates } from '$lib/helpers/getChampions';
 
 export const load: PageServerLoad = async () => {
 	return {
-		form: await superValidate(zod(formSchema)),
+		form: await superValidate(zod4(formSchema)),
 		teams: [] as Player[][]
 	};
 };
 
 export const actions: Actions = {
 	default: async (event) => {
-		const form = await superValidate(event, zod(formSchema));
+		const form = await superValidate(event, zod4(formSchema));
 		if (!form.valid) {
 			return fail(400, {
 				form

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { superForm } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { superForm } from 'sveltekit-superforms/client';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
 
 	import * as Form from '$lib/components/ui/form';
@@ -31,7 +31,7 @@
 	export let data: PageData;
 
 	const form = superForm(data.form, {
-		validators: zodClient(formSchema),
+		validators: zod4Client(formSchema),
 		invalidateAll: false,
 		resetForm: false,
 		// onChange: () => {
