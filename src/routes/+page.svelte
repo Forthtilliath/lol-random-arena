@@ -2,6 +2,7 @@
 	import { superForm } from 'sveltekit-superforms/client';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
+	import { fly } from 'svelte/transition';
 
 	import * as Form from '$lib/components/ui/form';
 	import * as Card from '$lib/components/ui/card';
@@ -20,6 +21,7 @@
 	import { formSchema } from './schema';
 	import type { PageData } from './$types.js';
 	import { FORM_PLAYER_KEYS, type Champion } from '$lib/data';
+	import { chunk } from '$lib/helpers/array';
 
 	import DialogSave from '$lib/components/dialogs/dialog-save.svelte';
 	import { setCtx } from '$lib/contexts/form-context';
@@ -58,6 +60,8 @@
 	let teams: PlayerWithChampion[][] = [];
 	let playersSettingsVisible = true;
 
+	const playerPairs = chunk<(typeof FORM_PLAYER_KEYS)[number]>([...FORM_PLAYER_KEYS], 2);
+
 	function getPathImage(champion: Champion) {
 		const image =
 			champion?.image ??
@@ -88,9 +92,16 @@
 		<form method="post" use:enhance class="mx-auto space-y-4">
 			<FieldRandomTeam {form} field="random_team" />
 
-			<div class="grid grid-cols-players gap-4">
-				{#each FORM_PLAYER_KEYS as field}
-					<FieldPlayerName {form} {field} label={capitalize(field.replace('_', ' '))} />
+			<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+				{#each playerPairs as pair, i}
+					<div class="rounded-lg border border-sky-900/60 bg-foreground/5 p-3 space-y-3">
+						<p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+							Duo {i + 1}
+						</p>
+						{#each pair as field}
+							<FieldPlayerName {form} {field} label={capitalize(field.replace('_', ' '))} />
+						{/each}
+					</div>
 				{/each}
 			</div>
 
@@ -125,25 +136,18 @@
 	{#if teams.length > 0}
 		<div class="grid grid-cols-cards gap-8">
 			{#each teams as team, i}
-				<Card.Root class="odd:bg-foreground/5 even:bg-foreground/10">
-					<Card.Header>
-						<Card.Title class="text-4xl text-center">{TEAM_NAMES[i]}</Card.Title>
-					</Card.Header>
-					<Card.Content class="text-center flex gap-2">
-						{#each team as player, i}
-							<!-- <p class="text-xl font-medium">{player.name}</p>
-							<p
-								class={cn('text-lg font-bold', {
-									'text-green-500': i === 0,
-									'text-red-500': i === 1
-								})}
-							>
-								{player.champion}
-							</p> -->
-							<CardChampion {player} />
-						{/each}
-					</Card.Content>
-				</Card.Root>
+				<div in:fly={{ y: 24, duration: 400, delay: i * 90 }}>
+					<Card.Root class="odd:bg-foreground/5 even:bg-foreground/10">
+						<Card.Header>
+							<Card.Title class="text-4xl text-center">{TEAM_NAMES[i]}</Card.Title>
+						</Card.Header>
+						<Card.Content class="text-center flex gap-2">
+							{#each team as player}
+								<CardChampion {player} />
+							{/each}
+						</Card.Content>
+					</Card.Root>
+				</div>
 			{/each}
 		</div>
 	{/if}
