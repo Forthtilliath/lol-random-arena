@@ -79,7 +79,7 @@
 	body {
 		@apply bg-background text-foreground;
 	}
-	
+
 	/* HACK: fix scroll bar (to not use shadcn translate) */
 	html:has([data-portal] > div) {
 		@apply overflow-y-hidden;

@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { InputEvents, InputProps } from "./index.js";
+	import type { InputEvents, InputProps } from './index.js';
 
 	type $$Props = InputProps;
 	type $$Events = InputEvents;
 
-	export let value: $$Props["value"] = undefined;
+	export let value: $$Props['value'] = undefined;
 </script>
 
 <input

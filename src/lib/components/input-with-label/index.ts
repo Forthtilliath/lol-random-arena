@@ -1,7 +1,7 @@
 import Root from './input-with-label.svelte';
 
 type Props = {
-  legend: string;
+	legend: string;
 };
 
 export {

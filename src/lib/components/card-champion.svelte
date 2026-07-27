@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Skeleton } from "$lib/components/ui/skeleton";
+	import { Skeleton } from '$lib/components/ui/skeleton';
 	import type { Champion } from '$lib/data';
 	import { onMount } from 'svelte';
 
@@ -41,6 +41,6 @@
 			<p class="font-semibold break-words line-clamp-2">{player.champion.name}</p>
 		</div>
 	{:else}
-    <Skeleton class="mx-auto w-full aspect-square" />
+		<Skeleton class="mx-auto w-full aspect-square" />
 	{/if}
 </div>

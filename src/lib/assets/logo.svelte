@@ -11,7 +11,7 @@
 	height={size}
 	viewBox="0 0 300 300"
 	preserveAspectRatio="xMidYMid meet"
-    class={className}
+	class={className}
 >
 	<g transform="translate(0,300) scale(0.1,-0.1)" fill="currentColor" stroke="none">
 		<path

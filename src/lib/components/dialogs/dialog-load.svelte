@@ -50,7 +50,7 @@
 </script>
 
 <Dialog.Root open={$open} {onOpenChange} preventScroll={false}>
-	<Dialog.Trigger class={cn(buttonVariants(),"flex gap-2")}>
+	<Dialog.Trigger class={cn(buttonVariants(), 'flex gap-2')}>
 		Load <Download />
 	</Dialog.Trigger>
 	<Dialog.Content class="sm:max-w-[425px]">

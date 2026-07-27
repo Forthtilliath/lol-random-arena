@@ -1,7 +1,7 @@
 import Root from './fieldset.svelte';
 
 type Props = {
-  legend: string;
+	legend: string;
 };
 
 export {
