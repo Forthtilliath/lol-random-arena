@@ -3,7 +3,7 @@
 
 	import * as Form from '$lib/components/ui/form';
 	import * as Select from '$lib/components/ui/select';
-	import { type FormPathLeaves, type SuperForm } from 'sveltekit-superforms';
+	import { type FormPathLeaves, type SuperForm } from 'sveltekit-superforms/client';
 	import { RANKS, type Rank } from '../../../routes/schema';
 
 	export let form: SuperForm<T>;

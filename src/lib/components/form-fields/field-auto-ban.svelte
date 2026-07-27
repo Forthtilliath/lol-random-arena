@@ -6,7 +6,7 @@
 		type FormFieldProxy,
 		type FormPathLeaves,
 		type SuperForm
-	} from 'sveltekit-superforms';
+	} from 'sveltekit-superforms/client';
 
 	export let form: SuperForm<T>;
 	export let field: FormPathLeaves<T>;

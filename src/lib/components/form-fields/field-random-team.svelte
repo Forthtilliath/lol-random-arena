@@ -6,7 +6,7 @@
 		type FormFieldProxy,
 		type FormPathLeaves,
 		type SuperForm
-	} from 'sveltekit-superforms';
+	} from 'sveltekit-superforms/client';
 
 	export let form: SuperForm<T>;
 	export let field: FormPathLeaves<T>;
@@ -22,7 +22,12 @@
 	<Form.Control let:attrs>
 		<div class="space-y-0.5">
 			<div class="flex items-center gap-2">
-				<Switch includeInput {...attrs} bind:checked={$value} aria-label="Randomly assign players in teams" />
+				<Switch
+					includeInput
+					{...attrs}
+					bind:checked={$value}
+					aria-label="Randomly assign players in teams"
+				/>
 				<Form.Label>Randomly assign players in teams</Form.Label>
 			</div>
 			<Form.Description>

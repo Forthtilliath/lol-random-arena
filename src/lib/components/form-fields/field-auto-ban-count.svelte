@@ -1,7 +1,7 @@
 <script lang="ts" generics="T extends Record<string, unknown>">
 	import * as Form from '$lib/components/ui/form';
 	import { InputNumber } from '$lib/components/input-number';
-	import { fieldProxy, type FormPathLeaves, type SuperForm } from 'sveltekit-superforms';
+	import { fieldProxy, type FormPathLeaves, type SuperForm } from 'sveltekit-superforms/client';
 	import { CHAMPIONS } from '$lib/data';
 	import { MIN_NON_BANNED_CHAMPIONS } from '$lib/constants';
 
