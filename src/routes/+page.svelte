@@ -20,13 +20,12 @@
 
 	import { formSchema } from './schema';
 	import type { PageData } from './$types.js';
-	import { FORM_PLAYER_KEYS, type Champion } from '$lib/data';
+	import { FORM_PLAYER_KEYS } from '$lib/data';
 	import { chunk } from '$lib/helpers/array';
 
 	import DialogSave from '$lib/components/dialogs/dialog-save.svelte';
 	import { setCtx } from '$lib/contexts/form-context';
 	import { TEAM_NAMES } from '$lib/constants';
-	import { cn } from '$lib/utils';
 	import DialogLoad from '$lib/components/dialogs/dialog-load.svelte';
 	import CardChampion from '$lib/components/card-champion.svelte';
 
@@ -61,17 +60,6 @@
 	let playersSettingsVisible = true;
 
 	const playerPairs = chunk<(typeof FORM_PLAYER_KEYS)[number]>([...FORM_PLAYER_KEYS], 2);
-
-	function getPathImage(champion: Champion) {
-		const image =
-			champion?.image ??
-			champion.name
-				.replace(/[éê]/g, 'e')
-				.replace(/[î]/g, 'i')
-				.replace(/[ '\.]/g, '');
-
-		return `/champion/${image}.png`;
-	}
 
 	// $: browser && localStorage.setItem('formData', JSON.stringify($formData));
 </script>

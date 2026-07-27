@@ -8,10 +8,7 @@
 	function getPathImage(champion: Champion) {
 		const image =
 			champion?.image ??
-			champion.name
-				.replace(/[éê]/g, 'e')
-				.replace(/[î]/g, 'i')
-				.replace(/[ '\.]/g, '');
+			champion.name.replace(/[éê]/g, 'e').replace(/[î]/g, 'i').replace(/[ '.]/g, '');
 
 		return `/champion/${image}.png`;
 	}

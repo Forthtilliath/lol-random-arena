@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Logo from '$lib/assets/logo.svelte';
 	import Logo2 from '$lib/assets/logo.jpg';
 </script>
 
@@ -8,7 +7,6 @@
 		class="flex title-font font-medium items-center md:justify-start justify-center text-slate-200"
 		href="/"
 	>
-		<!-- <Logo class="w-12 h-12 sm:w-20 sm:h-20" /> -->
 		<img src={Logo2} class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg" alt="Logo" />
 
 		<span class="ml-3 text-xl">LOL Nuclear Random Arena</span>
