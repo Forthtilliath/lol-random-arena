@@ -57,6 +57,7 @@ Tu avais dit vouloir le rendre "plus agréable à utiliser, plus sensationnel à
 ## Priorités suggérées
 
 Si tu veux avancer étape par étape plutôt que tout d'un coup, voici l'ordre que je recommande :
+
 1. README pro (rapide, gros impact visuel pour le portfolio)
 2. UX/wow-factor (répond directement à ta demande initiale sur ce projet)
 3. Nettoyage lint (rapide, remet `bun run lint` au vert)

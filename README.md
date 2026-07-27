@@ -46,14 +46,14 @@ bun run dev
 
 ### Scripts disponibles
 
-| Commande        | Description                           |
-| --------------- | -------------------------------------- |
-| `bun run dev`    | Serveur de développement               |
-| `bun run build`  | Build de production                    |
-| `bun run preview`| Prévisualise le build de production    |
-| `bun run check`  | Vérification des types (svelte-check)  |
-| `bun run lint`   | Lint (Prettier + ESLint)               |
-| `bun run format` | Formate le code (Prettier)             |
+| Commande          | Description                           |
+| ----------------- | ------------------------------------- |
+| `bun run dev`     | Serveur de développement              |
+| `bun run build`   | Build de production                   |
+| `bun run preview` | Prévisualise le build de production   |
+| `bun run check`   | Vérification des types (svelte-check) |
+| `bun run lint`    | Lint (Prettier + ESLint)              |
+| `bun run format`  | Formate le code (Prettier)            |
 
 ## Licence
 
