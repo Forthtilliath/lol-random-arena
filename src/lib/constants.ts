@@ -5,12 +5,12 @@ export const MIN_NON_BANNED_CHAMPIONS = 18;
 export const LS_KEY = 'lol-random-arena';
 
 export const TEAM_NAMES = [
-	'Team Scuttle',
-	'Team Poro',
-	'Team Raptor',
-	'Team Wolf',
-	'Team Krug',
-	'Team Minion',
-	'Team Gromp',
-	'Team Sentinel'
+	'Équipe Carapateur',
+	'Équipe Poro',
+	'Équipe Raptor',
+	'Équipe Loup',
+	'Équipe Krug',
+	'Équipe Sbire',
+	'Équipe Gromp',
+	'Équipe Sentinelle'
 ];
