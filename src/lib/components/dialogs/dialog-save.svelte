@@ -1,37 +1,36 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 
 	import UploadIcon from '@lucide/svelte/icons/upload';
-	import { LS_KEY } from '$lib/constants';
 	import Input from '../ui/input/input.svelte';
 	import { cn } from '$lib/utils';
 	import { getCtx } from '$lib/contexts/form-context';
+	import { readSaves, writeSave } from '$lib/helpers/saves';
+	import type { FormSchemaType } from '../../../routes/schema';
 
 	const { getFormData } = getCtx();
 
-	let previousSaves: Record<string, unknown> = {};
-	onMount(() => {
-		if (localStorage.getItem(LS_KEY)) {
-			previousSaves = JSON.parse(localStorage.getItem(LS_KEY)!);
-		}
-	});
-
 	let open = $state(false);
 	let value = $state('');
-	let savenameExists = $derived(Object.keys(previousSaves).includes(value));
+	let saveNames: string[] = $state([]);
+	let name = $derived(value.trim());
+	let savenameExists = $derived(saveNames.includes(name));
+
+	// Re-read the saves each time the dialog opens, to see the ones made earlier in the session.
+	function onOpenChange(isOpen: boolean) {
+		if (isOpen) saveNames = Object.keys(readSaves());
+	}
 
 	function onSubmit() {
-		const formData = getFormData();
-		const newSave = { ...previousSaves, [value]: formData };
-		localStorage.setItem(LS_KEY, JSON.stringify(newSave));
+		if (!name) return;
+		writeSave(name, getFormData() as FormSchemaType);
 		value = '';
 		open = false;
 	}
 </script>
 
-<Dialog.Root bind:open>
+<Dialog.Root bind:open {onOpenChange}>
 	<Dialog.Trigger class={cn(buttonVariants(), 'flex gap-2')}>
 		Save <UploadIcon />
 	</Dialog.Trigger>
@@ -65,7 +64,7 @@
 			</div>
 
 			<Dialog.Footer>
-				<Button type="submit">Save</Button>
+				<Button type="submit" disabled={!name}>Save</Button>
 			</Dialog.Footer>
 		</form>
 	</Dialog.Content>
