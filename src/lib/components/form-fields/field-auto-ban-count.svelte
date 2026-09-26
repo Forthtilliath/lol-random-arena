@@ -5,28 +5,33 @@
 	import { CHAMPIONS } from '$lib/data';
 	import { MIN_NON_BANNED_CHAMPIONS } from '$lib/constants';
 
-	export let form: SuperForm<T>;
-	export let field: FormPathLeaves<T>;
+	interface Props {
+		form: SuperForm<T>;
+		field: FormPathLeaves<T>;
+	}
+
+	let { form, field }: Props = $props();
 
 	const proxy = fieldProxy(form, field);
 
-	let valueNumber: number;
-	$: valueNumber = Number($proxy);
+	let valueNumber: number = $derived(Number($proxy));
 </script>
 
 <Form.Field {form} name={field} class="flex flex-row items-center justify-between">
-	<Form.Control let:attrs>
-		<div class="space-y-0.5">
-			<Form.Label>Number of bans</Form.Label>
-			<InputNumber
-				{...attrs}
-				bind:value={valueNumber}
-				min={1}
-				max={CHAMPIONS.length - MIN_NON_BANNED_CHAMPIONS}
-			/>
-			<Form.Description>
-				You can choose to auto ban the <span class="italic">n</span> most popular champions.
-			</Form.Description>
-		</div>
+	<Form.Control>
+		{#snippet children({ props })}
+			<div class="space-y-0.5">
+				<Form.Label>Number of bans</Form.Label>
+				<InputNumber
+					{...props}
+					bind:value={valueNumber}
+					min={1}
+					max={CHAMPIONS.length - MIN_NON_BANNED_CHAMPIONS}
+				/>
+				<Form.Description>
+					You can choose to auto ban the <span class="italic">n</span> most popular champions.
+				</Form.Description>
+			</div>
+		{/snippet}
 	</Form.Control>
 </Form.Field>

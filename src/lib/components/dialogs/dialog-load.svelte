@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { writable, type Writable } from 'svelte/store';
-	import { Check, Download, ChevronsUpDown } from 'lucide-svelte';
+	import type { Writable } from 'svelte/store';
+	import CheckIcon from '@lucide/svelte/icons/check';
+	import DownloadIcon from '@lucide/svelte/icons/download';
+	import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
 
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
@@ -12,8 +14,15 @@
 	import { LS_KEY } from '$lib/constants';
 	import { cn } from '$lib/utils';
 
-	export let formData: Writable<FormSchemaType>;
-	let saves: Record<string, FormSchemaType> = {};
+	interface Props {
+		formData: Writable<FormSchemaType>;
+	}
+
+	let { formData }: Props = $props();
+	let saves: Record<string, FormSchemaType> = $state({});
+	let selectedSave = $state('');
+	let open = $state(false);
+	let openSelect = $state(false);
 
 	onMount(() => {
 		if (localStorage.getItem(LS_KEY)) {
@@ -22,7 +31,7 @@
 	});
 
 	function onSubmit() {
-		const save = Object.entries(saves).find(([name]) => name === $selectedSave)?.[1];
+		const save = Object.entries(saves).find(([name]) => name === selectedSave)?.[1];
 		if (!save) {
 			// TODO: Error message
 			return;
@@ -33,25 +42,14 @@
 		}
 
 		$formData = save;
-		$selectedSave = '';
-		$open = false;
-	}
-
-	const selectedSave = writable<string>('');
-	let open = writable(false);
-	let openSelect = writable(false);
-
-	function onOpenChange(v: boolean) {
-		$open = v;
-	}
-	function onOpenChangeSelect(v: boolean) {
-		$openSelect = v;
+		selectedSave = '';
+		open = false;
 	}
 </script>
 
-<Dialog.Root open={$open} {onOpenChange} preventScroll={false}>
+<Dialog.Root bind:open>
 	<Dialog.Trigger class={cn(buttonVariants(), 'flex gap-2')}>
-		Load <Download />
+		Load <DownloadIcon />
 	</Dialog.Trigger>
 	<Dialog.Content class="sm:max-w-[425px]">
 		<Dialog.Header>
@@ -59,32 +57,39 @@
 			<Dialog.Description>Select a save file to load.</Dialog.Description>
 		</Dialog.Header>
 
-		<form method="post" on:submit|preventDefault={onSubmit} class="mx-auto space-y-4 w-72">
-			<Popover.Root open={$openSelect} onOpenChange={onOpenChangeSelect}>
+		<form
+			method="post"
+			onsubmit={(e) => {
+				e.preventDefault();
+				onSubmit();
+			}}
+			class="mx-auto space-y-4 w-72"
+		>
+			<Popover.Root bind:open={openSelect}>
 				<Popover.Trigger
 					role="combobox"
 					class={cn(buttonVariants({ variant: 'outline' }), 'w-[200px] justify-between', {
-						'text-muted-foreground': !$selectedSave
+						'text-muted-foreground': !selectedSave
 					})}
 				>
-					{$selectedSave || 'Select a save'}
-					<ChevronsUpDown class="ml-2 size-4 shrink-0 opacity-50" />
+					{selectedSave || 'Select a save'}
+					<ChevronsUpDownIcon class="ml-2 size-4 shrink-0 opacity-50" />
 				</Popover.Trigger>
 				<Popover.Content class="w-[200px] p-0 -translate-y-3">
 					<Command.Root>
 						<Command.Input placeholder="Search save..." />
 						<Command.Empty>No save found.</Command.Empty>
 						<Command.List>
-							{#each Object.keys(saves) as name}
+							{#each Object.keys(saves) as name (name)}
 								<Command.Item
 									value={name}
 									onSelect={() => {
-										$selectedSave = name;
-										$openSelect = false;
+										selectedSave = name;
+										openSelect = false;
 									}}
 								>
-									<Check
-										class={cn('mr-2 size-4', name === $selectedSave ? 'opacity-100' : 'opacity-0')}
+									<CheckIcon
+										class={cn('mr-2 size-4', name === selectedSave ? 'opacity-100' : 'opacity-0')}
 									/>
 									{name}
 								</Command.Item>

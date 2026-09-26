@@ -3,7 +3,11 @@
 	import type { Champion } from '$lib/data';
 	import { onMount } from 'svelte';
 
-	export let player: PlayerWithChampion;
+	interface Props {
+		player: PlayerWithChampion;
+	}
+
+	let { player }: Props = $props();
 
 	function getPathImage(champion: Champion) {
 		const image =
@@ -13,9 +17,9 @@
 		return `/champion/${image}.png`;
 	}
 
-	let src = getPathImage(player.champion);
+	let src = $derived(getPathImage(player.champion));
 
-	let loaded = false;
+	let loaded = $state(false);
 	onMount(() => {
 		const img = new Image();
 		img.src = src;

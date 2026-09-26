@@ -6,33 +6,34 @@
 	import { type FormPathLeaves, type SuperForm } from 'sveltekit-superforms/client';
 	import { RANKS, type Rank } from '../../../routes/schema';
 
-	export let form: SuperForm<T>;
-	export let field: FormPathLeaves<T>;
-	export let value: Rank;
+	interface Props {
+		form: SuperForm<T>;
+		field: FormPathLeaves<T>;
+		value: Rank;
+	}
 
-	$: selected = value ? { label: `${capitalize(value)}+`, value: value } : undefined;
+	let { form, field, value = $bindable() }: Props = $props();
 </script>
 
 <Form.Field {form} name={field}>
-	<Form.Control let:attrs>
-		<Form.Label>Rank</Form.Label>
-		<Select.Root
-			preventScroll={false}
-			{selected}
-			onSelectedChange={(v) => {
-				v && (value = v.value);
-			}}
-		>
-			<Select.Trigger {...attrs}>
-				<Select.Value placeholder="Select a rank" />
-			</Select.Trigger>
-			<Select.Content>
-				{#each RANKS as rank}
-					<Select.Item value={rank} label={`${capitalize(rank)}+`} />
-				{/each}
-			</Select.Content>
-		</Select.Root>
-		<input hidden bind:value name={attrs.name} />
+	<Form.Control>
+		{#snippet children({ props })}
+			<Form.Label>Rank</Form.Label>
+			<Select.Root
+				type="single"
+				name={props.name}
+				bind:value={() => value, (v) => v && (value = v as Rank)}
+			>
+				<Select.Trigger {...props}>
+					{value ? `${capitalize(value)}+` : 'Select a rank'}
+				</Select.Trigger>
+				<Select.Content>
+					{#each RANKS as rank (rank)}
+						<Select.Item value={rank} label={`${capitalize(rank)}+`} />
+					{/each}
+				</Select.Content>
+			</Select.Root>
+		{/snippet}
 	</Form.Control>
 	<Form.Description>You can choose from which rank the rate should be.</Form.Description>
 	<Form.FieldErrors />

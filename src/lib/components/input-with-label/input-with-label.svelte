@@ -3,12 +3,15 @@
 	import Input from '../ui/input/input.svelte';
 	import Label from '../ui/label/label.svelte';
 
-	export let label: string;
-	export let value: string | undefined = undefined;
-	export let name: string | undefined = undefined;
+	interface Props {
+		label: string;
+		value?: string | undefined;
+		name?: string | undefined;
+	}
 
-	let id: string;
-	$: id = uniqueId('input-with-label-');
+	let { label, value = $bindable(undefined), name = undefined }: Props = $props();
+
+	let id: string = $derived(uniqueId('input-with-label-'));
 </script>
 
 <div class="flex w-full max-w-sm flex-col gap-1.5">
