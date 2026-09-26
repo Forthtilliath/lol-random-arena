@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { TEAM_SETUP_KEYS } from '$lib/data';
 
 export const RANKS = [
 	'iron',
@@ -24,6 +25,7 @@ export const criterias: Record<Criteria, string> = {
 const playerSchema = z.string().min(1);
 
 export const formSchema = z.object({
+	setup: z.enum(TEAM_SETUP_KEYS).default('duo'),
 	random_team: z.boolean().default(true),
 	player_1: playerSchema.default('Player 1'),
 	player_2: playerSchema.default('Player 2'),
@@ -41,6 +43,8 @@ export const formSchema = z.object({
 	player_14: playerSchema.default('Player 14'),
 	player_15: playerSchema.default('Player 15'),
 	player_16: playerSchema.default('Player 16'),
+	player_17: playerSchema.default('Player 17'),
+	player_18: playerSchema.default('Player 18'),
 	auto_ban: z.boolean().default(false),
 	auto_ban_count: z.number().min(0).max(170).default(8),
 	auto_ban_criteria: z.enum(CRITERIAS).default('popularity'),

@@ -4,14 +4,23 @@ import { zod4 } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types.js';
 import { fail } from '@sveltejs/kit';
 import { chunk, shuffle } from '$lib/helpers/array';
-import { CHAMPIONS, type Champion } from '$lib/data';
-import { getChampionsRate, getPlayers, getRandomChampion, sortByMixed } from '$lib/helpers/actions';
+import { CHAMPIONS, TEAM_SETUPS } from '$lib/data';
+import {
+	assignChampionsToTeams,
+	getChampionsRate,
+	getPlayers,
+	sortByMixed
+} from '$lib/helpers/actions';
+import { decodeTeams } from '$lib/helpers/share';
 import type { ChampionWithRates } from '$lib/helpers/getChampions';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ url }) => {
+	const shared = url.searchParams.get('share');
+	const teams: PlayerWithChampion[][] = shared ? ((await decodeTeams(shared)) ?? []) : [];
+
 	return {
 		form: await superValidate(zod4(formSchema)),
-		teams: [] as Player[][]
+		teams
 	};
 };
 
@@ -25,11 +34,12 @@ export const actions: Actions = {
 		}
 
 		const { data } = form;
+		const setup = TEAM_SETUPS[data.setup];
 
-		// Generate teams
-		let players: Player[] = getPlayers(data);
+		// Generate teams (only the players relevant to the selected setup, in declaration order)
+		let players: Player[] = getPlayers(data).slice(0, setup.playerCount);
 		if (data.random_team) players = shuffle(players);
-		const teams: Partial<PlayerWithChampion>[][] = chunk(players, 2);
+		const teams: Partial<PlayerWithChampion>[][] = chunk(players, setup.teamSize);
 
 		// Fetch champions to ban
 		let championsLeft = CHAMPIONS;
@@ -50,19 +60,8 @@ export const actions: Actions = {
 			);
 		}
 
-		// Pick random champion for each team
-		const championsPicked = new Set<Champion['id']>();
-		for (const team of teams) {
-			const champion = getRandomChampion(championsLeft);
-			championsPicked.add(champion.id);
-			team[0].champion = champion;
-		}
-
-		championsLeft = CHAMPIONS.filter((c) => !championsPicked.has(c.id));
-		for (const team of teams) {
-			const champion = getRandomChampion(championsLeft);
-			team[1].champion = champion;
-		}
+		// Pick a random champion for each player, position by position
+		assignChampionsToTeams(teams, championsLeft, setup.teamSize);
 
 		return {
 			form,

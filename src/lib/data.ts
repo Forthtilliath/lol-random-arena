@@ -191,5 +191,23 @@ export const FORM_PLAYER_KEYS = [
 	'player_13',
 	'player_14',
 	'player_15',
-	'player_16'
+	'player_16',
+	'player_17',
+	'player_18'
 ] as const;
+
+export const TEAM_SETUP_KEYS = ['duo', 'trio'] as const;
+export type TeamSetupKey = (typeof TEAM_SETUP_KEYS)[number];
+
+export type TeamSetup = {
+	label: string;
+	groupLabel: string;
+	teamSize: number;
+	teamCount: number;
+	playerCount: number;
+};
+
+export const TEAM_SETUPS: Record<TeamSetupKey, TeamSetup> = {
+	duo: { label: '8 teams of 2', groupLabel: 'Duo', teamSize: 2, teamCount: 8, playerCount: 16 },
+	trio: { label: '6 teams of 3', groupLabel: 'Trio', teamSize: 3, teamCount: 6, playerCount: 18 }
+};

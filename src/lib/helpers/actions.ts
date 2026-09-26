@@ -26,6 +26,36 @@ export function getRandomChampion(listChampions: Readonly<Champion[]>): Champion
 	return listChampions[championIndex];
 }
 
+/**
+ * Assigns a random champion to every player of every team, one team position at a time
+ * (all "position 0" players first, then all "position 1" players, etc.), so that a champion
+ * used at an earlier position is never repeated at a later one. Mutates `teams` in place.
+ *
+ * @param teams - Teams to fill, grouped by position (`teams[i][position]`).
+ * @param championsPool - Champions available for assignment (after bans, if any).
+ * @param teamSize - Number of players per team (2 for duos, 3 for trios, etc.).
+ */
+export function assignChampionsToTeams<T extends { champion?: Champion }>(
+	teams: T[][],
+	championsPool: Readonly<Champion[]>,
+	teamSize: number
+): void {
+	const pickedInEarlierPositions = new Set<Champion['id']>();
+
+	for (let position = 0; position < teamSize; position++) {
+		const pool = championsPool.filter((c) => !pickedInEarlierPositions.has(c.id));
+		const pickedThisPosition = new Set<Champion['id']>();
+
+		for (const team of teams) {
+			const champion = getRandomChampion(pool);
+			team[position].champion = champion;
+			pickedThisPosition.add(champion.id);
+		}
+
+		pickedThisPosition.forEach((id) => pickedInEarlierPositions.add(id));
+	}
+}
+
 export function getPath(rank: string, byWinrate: boolean = false) {
 	return `https://www.leagueofgraphs.com/fr/champions/builds/${rank}/arena${byWinrate ? '/by-winrate' : ''}`;
 }
