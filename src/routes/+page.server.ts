@@ -1,18 +1,13 @@
-import { superValidate } from 'sveltekit-superforms/server';
+import { message, superValidate } from 'sveltekit-superforms/server';
 import { formSchema } from './schema';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types.js';
 import { fail } from '@sveltejs/kit';
 import { chunk, shuffle } from '$lib/helpers/array';
 import { CHAMPIONS, TEAM_SETUPS } from '$lib/data';
-import {
-	assignChampionsToTeams,
-	getChampionsRate,
-	getPlayers,
-	sortByMixed
-} from '$lib/helpers/actions';
+import { assignChampionsToTeams, getPlayers } from '$lib/helpers/actions';
+import { fetchArenaStats, rankChampions } from '$lib/helpers/arena-stats';
 import { decodeTeams } from '$lib/helpers/share';
-import type { ChampionWithRates } from '$lib/helpers/getChampions';
 
 export const load: PageServerLoad = async ({ url }) => {
 	const shared = url.searchParams.get('share');
@@ -41,27 +36,33 @@ export const actions: Actions = {
 		if (data.random_team) players = shuffle(players);
 		const teams: Partial<PlayerWithChampion>[][] = chunk(players, setup.teamSize);
 
-		// Fetch champions to ban
+		// Ban the top champions of op.gg's Arena stats for the chosen criteria
 		let championsLeft = CHAMPIONS;
 		if (data.auto_ban) {
-			let champions: ChampionWithRates[] = await getChampionsRate(
-				data.auto_ban_rank,
-				data.auto_ban_criteria === 'winrate'
-			);
-
-			if (data.auto_ban_criteria === 'mixed') {
-				champions = champions.toSorted(sortByMixed);
+			let stats;
+			try {
+				stats = await fetchArenaStats();
+			} catch (error) {
+				console.error('Failed to fetch Arena stats', error);
+				return message(
+					form,
+					'Could not fetch Arena stats from op.gg, try again without auto ban.',
+					{
+						status: 502
+					}
+				);
 			}
 
-			const championsBanned = champions.slice(0, data.auto_ban_count);
-
-			championsLeft = CHAMPIONS.filter(
-				(c) => !championsBanned.map((c) => c.name.replace('\\', '')).includes(c.slug)
+			const bannedIds = new Set(
+				rankChampions(stats, data.auto_ban_criteria)
+					.slice(0, data.auto_ban_count)
+					.map((champion) => champion.id)
 			);
+			championsLeft = CHAMPIONS.filter((champion) => !bannedIds.has(champion.id));
 		}
 
 		// Pick a random champion for each player, position by position
-		assignChampionsToTeams(teams, championsLeft, setup.teamSize);
+		assignChampionsToTeams(teams, championsLeft);
 
 		return {
 			form,
