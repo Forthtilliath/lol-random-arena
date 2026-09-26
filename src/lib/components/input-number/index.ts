@@ -4,12 +4,11 @@ import { type VariantProps, tv } from 'tailwind-variants';
 import type { ControlAttrs } from 'formsnap';
 
 export const buttonVariants = tv({
-	base: 'h-10 border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-foreground/10',
-	// base: 'bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:outline-none',
+	base: 'h-10 border border-gold-4 bg-grey-4 px-3 py-2 text-sm text-gold-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-40 hover:border-gold-2 hover:bg-gold-5/50',
 	variants: {
 		variant: {
-			minus: 'rounded-s-md',
-			plus: 'rounded-e-md'
+			minus: '',
+			plus: ''
 		},
 		disabled: {
 			true: 'pointer-events-none opacity-50',

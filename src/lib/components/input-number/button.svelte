@@ -10,13 +10,13 @@
 		type="button"
 		id="decrement-button"
 		data-input-counter-decrement="quantity-input"
-		aria-label="Decrease value"
+		aria-label="Diminuer"
 		class={cn(buttonVariants({ variant, disabled }))}
 		{disabled}
 		{...restProps}
 	>
 		<svg
-			class="w-3 h-3 text-gray-900 dark:text-white"
+			class="w-3 h-3"
 			aria-hidden="true"
 			xmlns="http://www.w3.org/2000/svg"
 			fill="none"
@@ -36,13 +36,13 @@
 		type="button"
 		id="increment-button"
 		data-input-counter-increment="quantity-input"
-		aria-label="Increase value"
+		aria-label="Augmenter"
 		class={cn(buttonVariants({ variant, disabled }))}
 		{disabled}
 		{...restProps}
 	>
 		<svg
-			class="w-3 h-3 text-gray-900 dark:text-white"
+			class="w-3 h-3"
 			aria-hidden="true"
 			xmlns="http://www.w3.org/2000/svg"
 			fill="none"

@@ -1,68 +1,60 @@
 @import 'tailwindcss';
+@import '@fontsource/cinzel/600.css';
+@import '@fontsource/cinzel/700.css';
+@import '@fontsource-variable/inter';
 
+/* Thème « Hextech » : palette officielle du client League of Legends (or, bleu hextech, noir
+   bleuté). Thème sombre unique, partagé à l'identique avec l'app React Native
+   (reactnative-lol-random-arena, constants/theme.ts) : toute modification se reporte des deux côtés. */
 @layer base {
 	:root {
-		--background: hsl(0 0% 100%);
-		--foreground: hsl(222.2 84% 4.9%);
+		--gold-1: #f0e6d2;
+		--gold-2: #c8aa6e;
+		--gold-3: #c89b3c;
+		--gold-4: #785a28;
+		--gold-5: #463714;
+		--gold-6: #32281e;
 
-		--muted: hsl(210 40% 96.1%);
-		--muted-foreground: hsl(215.4 16.3% 46.9%);
+		--blue-1: #cdfafa;
+		--blue-2: #0ac8b9;
+		--blue-3: #0397ab;
+		--blue-4: #005a82;
+		--blue-5: #0a323c;
+		--blue-6: #091428;
+		--blue-7: #0a1428;
 
-		--popover: hsl(0 0% 100%);
-		--popover-foreground: hsl(222.2 84% 4.9%);
+		--grey-1: #a09b8c;
+		--grey-2: #5b5a56;
+		--grey-3: #3c3c41;
+		--grey-4: #1e2328;
+		--hextech-black: #010a13;
 
-		--card: hsl(0 0% 100%);
-		--card-foreground: hsl(222.2 84% 4.9%);
+		--background: var(--hextech-black);
+		--foreground: var(--gold-1);
 
-		--border: hsl(214.3 31.8% 91.4%);
-		--input: hsl(214.3 31.8% 91.4%);
+		--card: var(--blue-7);
+		--card-foreground: var(--gold-1);
+		--popover: var(--blue-7);
+		--popover-foreground: var(--gold-1);
 
-		--primary: hsl(222.2 47.4% 11.2%);
-		--primary-foreground: hsl(210 40% 98%);
+		--muted: var(--grey-4);
+		--muted-foreground: var(--grey-1);
 
-		--secondary: hsl(210 40% 96.1%);
-		--secondary-foreground: hsl(222.2 47.4% 11.2%);
+		--border: var(--gold-5);
+		--input: var(--grey-3);
 
-		--accent: hsl(210 40% 96.1%);
-		--accent-foreground: hsl(222.2 47.4% 11.2%);
+		--primary: var(--gold-2);
+		--primary-foreground: var(--hextech-black);
+		--secondary: var(--grey-4);
+		--secondary-foreground: var(--gold-1);
+		--accent: var(--blue-2);
+		--accent-foreground: var(--hextech-black);
 
-		--destructive: hsl(0 72.2% 50.6%);
-		--destructive-foreground: hsl(210 40% 98%);
+		--destructive: #e84057;
+		--destructive-foreground: var(--gold-1);
 
-		--ring: hsl(222.2 84% 4.9%);
-
-		--radius: 0.5rem;
-	}
-
-	.dark {
-		--background: hsl(222.2 84% 4.9%);
-		--foreground: hsl(210 40% 98%);
-
-		--muted: hsl(217.2 32.6% 17.5%);
-		--muted-foreground: hsl(215 20.2% 65.1%);
-
-		--popover: hsl(222.2 84% 4.9%);
-		--popover-foreground: hsl(210 40% 98%);
-
-		--card: hsl(222.2 84% 4.9%);
-		--card-foreground: hsl(210 40% 98%);
-
-		--border: hsl(217.2 32.6% 17.5%);
-		--input: hsl(217.2 32.6% 17.5%);
-
-		--primary: hsl(210 40% 98%);
-		--primary-foreground: hsl(222.2 47.4% 11.2%);
-
-		--secondary: hsl(217.2 32.6% 17.5%);
-		--secondary-foreground: hsl(210 40% 98%);
-
-		--accent: hsl(217.2 32.6% 17.5%);
-		--accent-foreground: hsl(210 40% 98%);
-
-		--destructive: hsl(0 62.8% 30.6%);
-		--destructive-foreground: hsl(210 40% 98%);
-
-		--ring: hsl(212.7 26.8% 83.9%);
+		--ring: var(--blue-2);
+		--radius: 0.25rem;
 	}
 }
 
@@ -75,50 +67,82 @@
 
 	--color-primary: var(--primary);
 	--color-primary-foreground: var(--primary-foreground);
-
 	--color-secondary: var(--secondary);
 	--color-secondary-foreground: var(--secondary-foreground);
-
 	--color-destructive: var(--destructive);
 	--color-destructive-foreground: var(--destructive-foreground);
-
 	--color-muted: var(--muted);
 	--color-muted-foreground: var(--muted-foreground);
-
 	--color-accent: var(--accent);
 	--color-accent-foreground: var(--accent-foreground);
-
 	--color-popover: var(--popover);
 	--color-popover-foreground: var(--popover-foreground);
-
 	--color-card: var(--card);
 	--color-card-foreground: var(--card-foreground);
 
+	--color-gold-1: var(--gold-1);
+	--color-gold-2: var(--gold-2);
+	--color-gold-3: var(--gold-3);
+	--color-gold-4: var(--gold-4);
+	--color-gold-5: var(--gold-5);
+	--color-gold-6: var(--gold-6);
+	--color-blue-1: var(--blue-1);
+	--color-blue-2: var(--blue-2);
+	--color-blue-3: var(--blue-3);
+	--color-blue-4: var(--blue-4);
+	--color-blue-5: var(--blue-5);
+	--color-blue-6: var(--blue-6);
+	--color-blue-7: var(--blue-7);
+	--color-grey-1: var(--grey-1);
+	--color-grey-2: var(--grey-2);
+	--color-grey-3: var(--grey-3);
+	--color-grey-4: var(--grey-4);
+	--color-hextech: var(--hextech-black);
+
+	--font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+	--font-display: 'Cinzel', 'Times New Roman', serif;
+
 	--radius-lg: var(--radius);
-	--radius-md: calc(var(--radius) - 2px);
-	--radius-sm: calc(var(--radius) - 4px);
+	--radius-md: calc(var(--radius) - 1px);
+	--radius-sm: calc(var(--radius) - 2px);
 }
 
 @utility container {
 	width: 100%;
+	max-width: 72rem;
 	margin-inline: auto;
-	padding-inline: 2rem;
+	padding-inline: 1rem;
 
 	@media (width >= 640px) {
-		max-width: 640px;
+		padding-inline: 1.5rem;
 	}
-	@media (width >= 768px) {
-		max-width: 768px;
-	}
-	@media (width >= 1024px) {
-		max-width: 1024px;
-	}
-	@media (width >= 1280px) {
-		max-width: 1280px;
-	}
-	@media (width >= 1400px) {
-		max-width: 1400px;
-	}
+}
+
+/* Panneau à coins biseautés et liseré doré, la signature visuelle de l'interface. */
+@utility hex-panel {
+	--cut: 14px;
+	clip-path: polygon(
+		var(--cut) 0,
+		100% 0,
+		100% calc(100% - var(--cut)),
+		calc(100% - var(--cut)) 100%,
+		0 100%,
+		0 var(--cut)
+	);
+	border: 1px solid transparent;
+	background:
+		linear-gradient(180deg, color-mix(in srgb, var(--blue-7) 92%, transparent), var(--blue-6))
+			padding-box,
+		linear-gradient(160deg, var(--gold-3), var(--gold-5) 35%, var(--gold-5) 65%, var(--gold-4))
+			border-box;
+}
+
+/* Titre doré en dégradé, façon logo du client. */
+@utility gold-text {
+	background: linear-gradient(180deg, var(--gold-1) 10%, var(--gold-2) 55%, var(--gold-3));
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
 }
 
 @custom-variant dark (&:is(.dark *));
@@ -136,10 +160,28 @@
 		@apply border-border;
 	}
 	html {
-		scrollbar-gutter: stable both-edges;
+		scrollbar-gutter: stable;
+		color-scheme: dark;
 	}
 	body {
-		@apply bg-background text-foreground;
+		@apply bg-background text-foreground font-sans antialiased;
+		/* Halo hextech en haut de page + motif hexagonal discret. */
+		background-image:
+			radial-gradient(
+				ellipse 80% 45% at 50% -10%,
+				color-mix(in srgb, var(--blue-3) 28%, transparent),
+				transparent 70%
+			),
+			url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='98' viewBox='0 0 56 98'%3E%3Cpath d='M28 66L0 50V16L28 0l28 16v34L28 66zm0 32L0 82V66l28 16 28-16v16L28 98z' fill='none' stroke='%23c8aa6e' stroke-opacity='0.05'/%3E%3C/svg%3E");
+		background-attachment: fixed;
+	}
+	h1,
+	h2,
+	h3 {
+		@apply font-display;
+	}
+	::selection {
+		background: color-mix(in srgb, var(--blue-2) 40%, transparent);
 	}
 
 	/* HACK: fix scroll bar (to not use shadcn translate) */
