@@ -46,7 +46,7 @@ export const actions: Actions = {
 				console.error('Failed to fetch Arena stats', error);
 				return message(
 					form,
-					'Could not fetch Arena stats from op.gg, try again without auto ban.',
+					'Impossible de récupérer les statistiques op.gg. Réessaie, ou lance le tirage sans bannissement.',
 					{
 						status: 502
 					}
