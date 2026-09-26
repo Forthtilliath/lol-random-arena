@@ -1,4 +1,4 @@
-import type { Champion } from '$lib/data';
+import type { Champion } from '$lib/champions';
 
 declare global {
 	type Primitive = string | number | boolean;
