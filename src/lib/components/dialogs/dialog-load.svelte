@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import type { Writable } from 'svelte/store';
+	import { toast } from 'svelte-sonner';
 	import CheckIcon from '@lucide/svelte/icons/check';
 	import DownloadIcon from '@lucide/svelte/icons/download';
 	import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
@@ -10,8 +10,8 @@
 	import * as Popover from '$lib/components/ui/popover';
 	import * as Command from '$lib/components/ui/command';
 
-	import { formSchema, type FormSchemaType } from '../../../routes/schema';
-	import { LS_KEY } from '$lib/constants';
+	import type { FormSchemaType } from '../../../routes/schema';
+	import { loadSave, readSaves } from '$lib/helpers/saves';
 	import { cn } from '$lib/utils';
 
 	interface Props {
@@ -19,25 +19,22 @@
 	}
 
 	let { formData }: Props = $props();
-	let saves: Record<string, FormSchemaType> = $state({});
+	let saveNames: string[] = $state([]);
 	let selectedSave = $state('');
 	let open = $state(false);
 	let openSelect = $state(false);
 
-	onMount(() => {
-		if (localStorage.getItem(LS_KEY)) {
-			saves = JSON.parse(localStorage.getItem(LS_KEY)!);
-		}
-	});
+	// Re-read the saves each time the dialog opens, to list the ones made earlier in the session.
+	function onOpenChange(isOpen: boolean) {
+		if (isOpen) saveNames = Object.keys(readSaves());
+	}
 
 	function onSubmit() {
-		const save = Object.entries(saves).find(([name]) => name === selectedSave)?.[1];
+		if (!selectedSave) return;
+
+		const save = loadSave(selectedSave);
 		if (!save) {
-			// TODO: Error message
-			return;
-		}
-		if (!formSchema.safeParse(save).success) {
-			// TODO: Error message
+			toast.error(`The save "${selectedSave}" is corrupted and can't be loaded.`);
 			return;
 		}
 
@@ -47,7 +44,7 @@
 	}
 </script>
 
-<Dialog.Root bind:open>
+<Dialog.Root bind:open {onOpenChange}>
 	<Dialog.Trigger class={cn(buttonVariants(), 'flex gap-2')}>
 		Load <DownloadIcon />
 	</Dialog.Trigger>
@@ -80,7 +77,7 @@
 						<Command.Input placeholder="Search save..." />
 						<Command.Empty>No save found.</Command.Empty>
 						<Command.List>
-							{#each Object.keys(saves) as name (name)}
+							{#each saveNames as name (name)}
 								<Command.Item
 									value={name}
 									onSelect={() => {
@@ -100,7 +97,7 @@
 			</Popover.Root>
 
 			<Dialog.Footer>
-				<Button type="submit">Load</Button>
+				<Button type="submit" disabled={!selectedSave}>Load</Button>
 			</Dialog.Footer>
 		</form>
 	</Dialog.Content>
