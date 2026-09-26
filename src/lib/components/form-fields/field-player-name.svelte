@@ -1,4 +1,5 @@
 <script lang="ts" generics="T extends Record<string, unknown>">
+	import { untrack } from 'svelte';
 	import * as Form from '$lib/components/ui/form';
 	import { Input } from '$lib/components/ui/input';
 	import { fieldProxy, type FormPathLeaves, type SuperForm } from 'sveltekit-superforms/client';
@@ -11,7 +12,7 @@
 
 	let { form, field, label }: Props = $props();
 
-	const value = fieldProxy(form, field);
+	const value = untrack(() => fieldProxy(form, field));
 </script>
 
 <Form.Field {form} name={field}>
