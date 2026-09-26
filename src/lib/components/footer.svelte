@@ -1,26 +1,19 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
-	import Logo2 from '$lib/assets/logo.jpg';
+	import { CHAMPIONS_VERSION } from '$lib/data';
 </script>
 
-<footer class="container px-5 py-5 mx-auto flex items-center md:flex-row flex-col justify-center">
-	<a
-		class="flex title-font font-medium items-center md:justify-start justify-center text-slate-200"
-		href={resolve('/')}
-	>
-		<img src={Logo2} class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg" alt="Logo" />
-
-		<span class="ml-3 text-xl">LOL Nuclear Random Arena</span>
-	</a>
-	<p
-		class="text-sm text-slate-500 md:ml-4 md:pl-4 md:border-l-2 md:border-gray-200 md:py-2 md:mt-0 mt-4"
-	>
-		© 2024 LOL Nuclear Random Arena —
+<footer class="container border-t border-gold-5/60 py-6 text-center text-xs text-grey-2">
+	<p>
+		LoL Random Arena · par
 		<a
 			href="https://github.com/Forthtilliath"
-			class="text-gray-600 ml-1"
+			class="text-grey-1 underline-offset-2 hover:text-gold-2 hover:underline"
 			rel="noopener noreferrer"
 			target="_blank">@forth</a
 		>
+		· champions du patch {CHAMPIONS_VERSION}, statistiques op.gg
+	</p>
+	<p class="mt-1">
+		Projet de fan non affilié à Riot Games. League of Legends est une marque de Riot Games, Inc.
 	</p>
 </footer>

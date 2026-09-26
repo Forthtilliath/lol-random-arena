@@ -1,47 +1,23 @@
 <script lang="ts">
-	import { Skeleton } from '$lib/components/ui/skeleton';
-	import type { Champion } from '$lib/data';
-	import { onMount } from 'svelte';
-
 	interface Props {
 		player: PlayerWithChampion;
 	}
 
 	let { player }: Props = $props();
-
-	function getPathImage(champion: Champion) {
-		const image =
-			champion?.image ??
-			champion.name.replace(/[éê]/g, 'e').replace(/[î]/g, 'i').replace(/[ '.]/g, '');
-
-		return `/champion/${image}.png`;
-	}
-
-	let src = $derived(getPathImage(player.champion));
-
-	let loaded = $state(false);
-	onMount(() => {
-		const img = new Image();
-		img.src = src;
-		img.addEventListener('load', () => {
-			loaded = true;
-		});
-	});
 </script>
 
-<div class="relative w-full flex-1 mx-auto rounded-lg overflow-hidden">
-	{#if loaded}
-		<img
-			src={getPathImage(player.champion)}
-			alt={player.champion.name}
-			class="mx-auto w-full aspect-square"
-		/>
-		<div class="absolute w-full h-full top-0 bg-black/80"></div>
-		<div class="absolute w-full h-full top-0 grid place-items-center px-2">
-			<p class="font-medium break-words line-clamp-2">{player.name}</p>
-			<p class="font-semibold break-words line-clamp-2">{player.champion.name}</p>
-		</div>
-	{:else}
-		<Skeleton class="mx-auto w-full aspect-square" />
-	{/if}
-</div>
+<!-- Le fond gris sert d'emplacement pendant le chargement du portrait, sans JS. -->
+<figure class="group relative aspect-square overflow-hidden border border-gold-4 bg-grey-4">
+	<img
+		src={`/champion/${player.champion.slug}.png`}
+		alt={player.champion.name}
+		loading="lazy"
+		class="size-full object-cover transition-transform duration-500 group-hover:scale-110"
+	/>
+	<figcaption
+		class="absolute inset-x-0 bottom-0 bg-linear-to-t from-hextech via-hextech/85 to-transparent px-1.5 pt-8 pb-1.5 text-center"
+	>
+		<p class="truncate text-xs text-grey-1">{player.name}</p>
+		<p class="truncate font-display text-sm font-semibold text-gold-1">{player.champion.name}</p>
+	</figcaption>
+</figure>

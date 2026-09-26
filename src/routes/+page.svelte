@@ -1,37 +1,20 @@
 <script lang="ts">
+	import { tick, untrack } from 'svelte';
 	import { superForm } from 'sveltekit-superforms/client';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
-	import { fly } from 'svelte/transition';
-	import { untrack } from 'svelte';
+	import DicesIcon from '@lucide/svelte/icons/dices';
 
-	import * as Form from '$lib/components/ui/form';
-	import * as Card from '$lib/components/ui/card';
 	import { Button } from '$lib/components/ui/button';
-	import { Fieldset } from '$lib/components/fieldset';
-	import {
-		FieldTeamSetup,
-		FieldRandomTeam,
-		FieldPlayerName,
-		FieldAutoBan,
-		FieldAutoBanCount,
-		FieldAutoBanCriteria
-	} from '$lib/components/form-fields';
-
-	import { capitalize } from '$lib/helpers/capitalize';
+	import AppHeader from '$lib/components/app-header.svelte';
+	import PlayersSection from '$lib/components/players-section.svelte';
+	import BansSection from '$lib/components/bans-section.svelte';
+	import ResultsSection from '$lib/components/results-section.svelte';
+	import { setCtx } from '$lib/contexts/form-context';
 	import { encodeTeams } from '$lib/helpers/share';
-	import LinkIcon from '@lucide/svelte/icons/link';
 
 	import { formSchema } from './schema';
 	import type { PageData } from './$types.js';
-	import { FORM_PLAYER_KEYS, TEAM_SETUPS } from '$lib/data';
-	import { chunk } from '$lib/helpers/array';
-
-	import DialogSave from '$lib/components/dialogs/dialog-save.svelte';
-	import { setCtx } from '$lib/contexts/form-context';
-	import { TEAM_NAMES } from '$lib/constants';
-	import DialogLoad from '$lib/components/dialogs/dialog-load.svelte';
-	import CardChampion from '$lib/components/card-champion.svelte';
 
 	interface Props {
 		data: PageData;
@@ -48,135 +31,58 @@
 			invalidateAll: false,
 			resetForm: false,
 			onUpdated: ({ form: f }) => {
-				if (f.message) {
-					toast.error(f.message);
-				} else if (f.valid) {
-					toast.info('Submitted!');
-				} else {
-					toast.error('Please fix the errors in the form.');
-				}
+				if (f.message) toast.error(f.message);
+				else if (!f.valid) toast.error('Corrige les champs signalés avant de lancer le tirage.');
 			},
-			onResult: ({ result }) => {
-				if (result.type === 'success') {
-					teams = result?.data?.teams;
-					playersSettingsVisible = false;
-				}
+			onResult: async ({ result }) => {
+				if (result.type !== 'success') return;
+				teams = result.data?.teams ?? [];
+				await tick();
+				document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' });
 			}
 		}
 	);
 
+	const { form: formData, enhance, submitting } = form;
 	setCtx(() => $formData);
 
-	const { form: formData, enhance, submitting } = form;
-	const initialTeams = untrack(() => data.teams);
-	let teams: PlayerWithChampion[][] = $state(initialTeams);
-	let playersSettingsVisible = $state(initialTeams.length === 0);
-
-	const activeSetup = $derived(TEAM_SETUPS[$formData.setup]);
-	const playerGroups = $derived(
-		chunk(FORM_PLAYER_KEYS.slice(0, activeSetup.playerCount), activeSetup.teamSize)
-	);
-	// Always lay both the player groups and the results out on 2 rows (4 columns for 8
-	// duos/teams, 3 columns for 6 trios/teams).
-	const groupColumns = $derived(Math.ceil(playerGroups.length / 2));
-	const teamColumns = $derived(Math.ceil(teams.length / 2));
+	let teams: PlayerWithChampion[][] = $state(untrack(() => data.teams));
 
 	async function copyShareLink() {
-		const encoded = await encodeTeams(teams);
-		const url = `${window.location.origin}${window.location.pathname}?share=${encoded}`;
-		await navigator.clipboard.writeText(url);
-		toast.success('Share link copied to clipboard!');
+		const url = `${location.origin}${location.pathname}?share=${await encodeTeams(teams)}`;
+		try {
+			await navigator.clipboard.writeText(url);
+			toast.success('Lien du tirage copié !');
+		} catch {
+			toast.error("Impossible d'accéder au presse-papiers.");
+		}
 	}
 </script>
 
-<div class="container">
-	<h1
-		class="text-5xl font-bold text-center mt-4 mb-8 bg-gradient-to-r from-sky-400 via-sky-200 to-sky-400 bg-clip-text text-transparent"
-	>
-		Welcome to LOL Nuclear Random Arena !
-	</h1>
-	<p class="text-muted-foreground text-center max-w-2xl mx-auto mb-8 text-sm text-pretty">
-		Arena pits several duos or trios against each other in random skirmishes — augments and gold
-		carry you between rounds until only one team is left standing. Use this tool to randomize your
-		lobby's teams, bans and starting champions.
-	</p>
+<AppHeader />
 
-	<Fieldset legend="Players settings" hideable visible={playersSettingsVisible}>
-		<div class="flex gap-4 justify-end -translate-y-4">
-			<DialogSave />
-			<DialogLoad {formData} />
-		</div>
-
-		<form method="post" use:enhance class="mx-auto space-y-4">
-			<div class="flex gap-4 flex-wrap items-start">
-				<FieldTeamSetup {form} field="setup" />
-				<FieldRandomTeam {form} field="random_team" />
-			</div>
-
-			<div
-				class="grid gap-4"
-				style="grid-template-columns: repeat({groupColumns}, minmax(0, 1fr));"
-			>
-				{#each playerGroups as group, i (group.join('-'))}
-					<div class="rounded-lg border border-sky-900/60 bg-foreground/5 p-3 space-y-3">
-						<p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-							{activeSetup.groupLabel}
-							{i + 1}
-						</p>
-						{#each group as field (field)}
-							<FieldPlayerName {form} {field} label={capitalize(field.replace('_', ' '))} />
-						{/each}
-					</div>
-				{/each}
-			</div>
-
-			<Fieldset legend="Auto Ban">
-				<div class="space-y-4">
-					<FieldAutoBan {form} field="auto_ban" />
-
-					{#if $formData.auto_ban}
-						<FieldAutoBanCount {form} field="auto_ban_count" />
-
-						<FieldAutoBanCriteria
-							{form}
-							field="auto_ban_criteria"
-							value={$formData.auto_ban_criteria}
-						/>
-					{/if}
-				</div>
-			</Fieldset>
-
-			{#if $submitting}
-				<Form.Button disabled={$submitting}>Submitting...</Form.Button>
-			{:else}
-				<Form.Button>Choose champions Randomly</Form.Button>
-			{/if}
-		</form>
-	</Fieldset>
-</div>
-
-<div class="container">
+<div class="container space-y-8 pb-6">
 	{#if teams.length > 0}
-		<div class="flex justify-end mb-4">
-			<Button variant="outline" onclick={copyShareLink} class="gap-2">
-				Copy share link <LinkIcon class="size-4" />
+		<ResultsSection
+			{teams}
+			submitting={$submitting}
+			onReroll={() => form.submit()}
+			onShare={copyShareLink}
+		/>
+	{/if}
+
+	<form method="post" use:enhance class="space-y-6">
+		<PlayersSection {form} />
+		<BansSection {form} />
+
+		<!-- Bouton collé en bas d'écran sur mobile pour lancer le tirage sans remonter. -->
+		<div
+			class="sticky bottom-0 z-10 -mx-4 bg-linear-to-t from-hextech via-hextech/95 to-transparent px-4 pt-8 pb-4 sm:static sm:mx-0 sm:bg-none sm:p-0"
+		>
+			<Button type="submit" variant="hextech" size="xl" class="w-full" disabled={$submitting}>
+				<DicesIcon />
+				{$submitting ? 'Tirage en cours…' : 'Lancer le tirage'}
 			</Button>
 		</div>
-		<div class="grid gap-8" style="grid-template-columns: repeat({teamColumns}, minmax(0, 1fr));">
-			{#each teams as team, i (i)}
-				<div in:fly={{ y: 24, duration: 400, delay: i * 90 }}>
-					<Card.Root class="odd:bg-foreground/5 even:bg-foreground/10">
-						<Card.Header>
-							<Card.Title class="text-4xl text-center">{TEAM_NAMES[i]}</Card.Title>
-						</Card.Header>
-						<Card.Content class="text-center flex gap-2">
-							{#each team as player (player.name)}
-								<CardChampion {player} />
-							{/each}
-						</Card.Content>
-					</Card.Root>
-				</div>
-			{/each}
-		</div>
-	{/if}
+	</form>
 </div>

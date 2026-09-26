@@ -1,8 +1,9 @@
 <script lang="ts">
+	import { toast } from 'svelte-sonner';
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 
-	import UploadIcon from '@lucide/svelte/icons/upload';
+	import SaveIcon from '@lucide/svelte/icons/save';
 	import Input from '../ui/input/input.svelte';
 	import { cn } from '$lib/utils';
 	import { getCtx } from '$lib/contexts/form-context';
@@ -25,19 +26,25 @@
 	function onSubmit() {
 		if (!name) return;
 		writeSave(name, getFormData() as FormSchemaType);
+		toast.success(`Configuration « ${name} » sauvegardée.`);
 		value = '';
 		open = false;
 	}
 </script>
 
 <Dialog.Root bind:open {onOpenChange}>
-	<Dialog.Trigger class={cn(buttonVariants(), 'flex gap-2')}>
-		Save <UploadIcon />
+	<!-- type="button" : le déclencheur est placé dans le formulaire du tirage, il ne doit pas le soumettre. -->
+	<Dialog.Trigger type="button" class={cn(buttonVariants({ variant: 'outline', size: 'lg' }))}>
+		<SaveIcon /> Sauvegarder
 	</Dialog.Trigger>
-	<Dialog.Content class="sm:max-w-[425px]">
+	<Dialog.Content class="rounded-none border-gold-4 bg-blue-7 sm:max-w-md">
 		<Dialog.Header>
-			<Dialog.Title>Save players settings</Dialog.Title>
-			<Dialog.Description>Choose a name for you save.</Dialog.Description>
+			<Dialog.Title class="font-display tracking-wide text-gold-1 uppercase">
+				Sauvegarder la configuration
+			</Dialog.Title>
+			<Dialog.Description>
+				Pseudos, format et bannissements, pour les retrouver à la prochaine partie.
+			</Dialog.Description>
 		</Dialog.Header>
 
 		<form
@@ -46,25 +53,25 @@
 				e.preventDefault();
 				onSubmit();
 			}}
-			class="mx-auto space-y-4 w-72"
+			class="space-y-4"
 		>
-			<div>
+			<div class="space-y-1.5">
 				<Input
 					type="text"
-					placeholder="Save name"
+					placeholder="Nom de la sauvegarde (ex. Soirée du vendredi)"
+					aria-label="Nom de la sauvegarde"
 					bind:value
-					class={cn('w-full', {
-						'border-red-500': savenameExists,
-						'border-green-500': !savenameExists && value
-					})}
+					class="h-10 rounded-none border-grey-3 bg-hextech focus-visible:border-gold-2"
 				/>
 				{#if savenameExists}
-					<p class="text-red-500 text-sm">Save name already exists</p>
+					<p class="text-xs text-gold-3">Ce nom existe déjà : la sauvegarde sera remplacée.</p>
 				{/if}
 			</div>
 
 			<Dialog.Footer>
-				<Button type="submit" disabled={!name}>Save</Button>
+				<Button type="submit" variant="hextech" size="lg" disabled={!name}>
+					{savenameExists ? 'Remplacer' : 'Sauvegarder'}
+				</Button>
 			</Dialog.Footer>
 		</form>
 	</Dialog.Content>

@@ -16,16 +16,20 @@
 	const proxy = untrack(() => fieldProxy(form, field)) as unknown as Writable<number>;
 </script>
 
-<Form.Field {form} name={field} class="flex flex-row items-center justify-between">
+<Form.Field {form} name={field}>
 	<Form.Control>
 		{#snippet children({ props })}
-			<div class="space-y-0.5">
-				<Form.Label>Number of bans</Form.Label>
+			<div class="flex flex-wrap items-center justify-between gap-3">
+				<div class="space-y-0.5">
+					<Form.Label class="text-sm font-semibold text-gold-1">Nombre de bannissements</Form.Label>
+					<Form.Description class="text-xs text-grey-1">
+						Les <span class="text-gold-2">{$proxy}</span> premiers champions du classement sont retirés
+						du tirage.
+					</Form.Description>
+				</div>
 				<InputNumber {...props} bind:value={$proxy} min={1} max={MAX_AUTO_BANS} />
-				<Form.Description>
-					You can choose to auto ban the <span class="italic">n</span> most popular champions.
-				</Form.Description>
 			</div>
 		{/snippet}
 	</Form.Control>
+	<Form.FieldErrors class="text-xs" />
 </Form.Field>

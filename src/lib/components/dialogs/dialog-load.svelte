@@ -1,13 +1,10 @@
 <script lang="ts">
 	import type { Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
-	import CheckIcon from '@lucide/svelte/icons/check';
-	import DownloadIcon from '@lucide/svelte/icons/download';
-	import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
+	import FolderOpenIcon from '@lucide/svelte/icons/folder-open';
 
-	import { Button, buttonVariants } from '$lib/components/ui/button';
+	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
-	import * as Popover from '$lib/components/ui/popover';
 	import * as Command from '$lib/components/ui/command';
 
 	import type { FormSchemaType } from '../../../routes/schema';
@@ -20,85 +17,55 @@
 
 	let { formData }: Props = $props();
 	let saveNames: string[] = $state([]);
-	let selectedSave = $state('');
 	let open = $state(false);
-	let openSelect = $state(false);
 
 	// Re-read the saves each time the dialog opens, to list the ones made earlier in the session.
 	function onOpenChange(isOpen: boolean) {
 		if (isOpen) saveNames = Object.keys(readSaves());
 	}
 
-	function onSubmit() {
-		if (!selectedSave) return;
-
-		const save = loadSave(selectedSave);
+	function load(name: string) {
+		const save = loadSave(name);
 		if (!save) {
-			toast.error(`The save "${selectedSave}" is corrupted and can't be loaded.`);
+			toast.error(`La sauvegarde « ${name} » est corrompue et ne peut pas être chargée.`);
 			return;
 		}
 
 		$formData = save;
-		selectedSave = '';
 		open = false;
+		toast.success(`Configuration « ${name} » chargée.`);
 	}
 </script>
 
 <Dialog.Root bind:open {onOpenChange}>
-	<Dialog.Trigger class={cn(buttonVariants(), 'flex gap-2')}>
-		Load <DownloadIcon />
+	<!-- type="button" : le déclencheur est placé dans le formulaire du tirage, il ne doit pas le soumettre. -->
+	<Dialog.Trigger type="button" class={cn(buttonVariants({ variant: 'outline', size: 'lg' }))}>
+		<FolderOpenIcon /> Charger
 	</Dialog.Trigger>
-	<Dialog.Content class="sm:max-w-[425px]">
+	<Dialog.Content class="rounded-none border-gold-4 bg-blue-7 sm:max-w-md">
 		<Dialog.Header>
-			<Dialog.Title>Load players settings</Dialog.Title>
-			<Dialog.Description>Select a save file to load.</Dialog.Description>
+			<Dialog.Title class="font-display tracking-wide text-gold-1 uppercase">
+				Charger une configuration
+			</Dialog.Title>
+			<Dialog.Description>Choisis une sauvegarde pour remplir le formulaire.</Dialog.Description>
 		</Dialog.Header>
 
-		<form
-			method="post"
-			onsubmit={(e) => {
-				e.preventDefault();
-				onSubmit();
-			}}
-			class="mx-auto space-y-4 w-72"
-		>
-			<Popover.Root bind:open={openSelect}>
-				<Popover.Trigger
-					role="combobox"
-					class={cn(buttonVariants({ variant: 'outline' }), 'w-[200px] justify-between', {
-						'text-muted-foreground': !selectedSave
-					})}
-				>
-					{selectedSave || 'Select a save'}
-					<ChevronsUpDownIcon class="ml-2 size-4 shrink-0 opacity-50" />
-				</Popover.Trigger>
-				<Popover.Content class="w-[200px] p-0 -translate-y-3">
-					<Command.Root>
-						<Command.Input placeholder="Search save..." />
-						<Command.Empty>No save found.</Command.Empty>
-						<Command.List>
-							{#each saveNames as name (name)}
-								<Command.Item
-									value={name}
-									onSelect={() => {
-										selectedSave = name;
-										openSelect = false;
-									}}
-								>
-									<CheckIcon
-										class={cn('mr-2 size-4', name === selectedSave ? 'opacity-100' : 'opacity-0')}
-									/>
-									{name}
-								</Command.Item>
-							{/each}
-						</Command.List>
-					</Command.Root>
-				</Popover.Content>
-			</Popover.Root>
-
-			<Dialog.Footer>
-				<Button type="submit" disabled={!selectedSave}>Load</Button>
-			</Dialog.Footer>
-		</form>
+		{#if saveNames.length === 0}
+			<p class="border border-dashed border-grey-3 p-6 text-center text-sm text-grey-1">
+				Aucune sauvegarde pour l'instant. Utilise « Sauvegarder » pour garder tes pseudos.
+			</p>
+		{:else}
+			<Command.Root class="rounded-none border border-grey-3 bg-hextech">
+				<Command.Input placeholder="Rechercher une sauvegarde…" />
+				<Command.List>
+					<Command.Empty>Aucune sauvegarde ne correspond.</Command.Empty>
+					{#each saveNames as name (name)}
+						<Command.Item value={name} onSelect={() => load(name)} class="cursor-pointer">
+							{name}
+						</Command.Item>
+					{/each}
+				</Command.List>
+			</Command.Root>
+		{/if}
 	</Dialog.Content>
 </Dialog.Root>

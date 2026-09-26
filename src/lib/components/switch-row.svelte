@@ -12,29 +12,27 @@
 	interface Props {
 		form: SuperForm<T>;
 		field: FormPathLeaves<T>;
+		label: string;
+		description: string;
 	}
 
-	let { form, field }: Props = $props();
+	let { form, field, label, description }: Props = $props();
 
 	const { value } = untrack(() => formFieldProxy(form, field)) satisfies FormFieldProxy<boolean>;
 </script>
 
-<Form.Field
-	{form}
-	name={field}
-	class="flex flex-row items-center justify-between rounded-lg border p-4"
->
+<!-- Ligne « libellé + interrupteur » : toute la ligne est cliquable via le label. -->
+<Form.Field {form} name={field}>
 	<Form.Control>
 		{#snippet children({ props })}
-			<div class="space-y-0.5">
-				<div class="flex items-center gap-2">
-					<Switch {...props} bind:checked={$value} aria-label="Randomly assign players in teams" />
-					<Form.Label>Randomly assign players in teams</Form.Label>
+			<div
+				class="flex items-center justify-between gap-4 border border-grey-3/70 bg-hextech/50 px-4 py-3"
+			>
+				<div class="space-y-0.5">
+					<Form.Label class="text-sm font-semibold text-gold-1">{label}</Form.Label>
+					<Form.Description class="text-xs text-grey-1">{description}</Form.Description>
 				</div>
-				<Form.Description>
-					If disabled, player 1 will be with player 2, player 3 with player 4, etc.
-				</Form.Description>
-				<Form.FieldErrors />
+				<Switch {...props} bind:checked={$value} />
 			</div>
 		{/snippet}
 	</Form.Control>

@@ -1,31 +1,38 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import Footer from '$lib/components/footer.svelte';
 	import '../app.css';
 	import { Toaster } from 'svelte-sonner';
 	import * as Tooltip from '$lib/components/ui/tooltip';
+
 	interface Props {
-		children?: import('svelte').Snippet;
+		children?: Snippet;
 	}
 
 	let { children }: Props = $props();
-
-	// TODO Add loader
 </script>
 
 <svelte:head>
-	<title>LoL Random Arena</title>
+	<title>LoL Random Arena : équipes et champions aléatoires</title>
 	<meta
 		name="description"
-		content="Random Team & Champion Generator for League of Legends Arena Matches"
+		content="Générateur d'équipes et de champions aléatoires pour le mode Arena de League of Legends, avec bannissement automatique d'après les statistiques op.gg."
 	/>
+	<meta name="theme-color" content="#010a13" />
 </svelte:head>
 
-<Toaster />
+<Toaster
+	theme="dark"
+	position="top-center"
+	toastOptions={{
+		class: '!rounded-none !border-gold-4 !bg-blue-7 !text-gold-1 !font-sans'
+	}}
+/>
 <Tooltip.Provider>
-	<section class="min-h-[100dvh] flex flex-col justify-between">
-		<main>
+	<div class="flex min-h-dvh flex-col">
+		<main class="flex-1">
 			{@render children?.()}
 		</main>
 		<Footer />
-	</section>
+	</div>
 </Tooltip.Provider>
