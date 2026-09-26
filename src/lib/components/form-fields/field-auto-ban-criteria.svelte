@@ -20,7 +20,7 @@
 			<div class="flex items-center gap-1.5">
 				<Form.Label>Criteria to auto ban</Form.Label>
 				<InfoTooltip
-					text="Ranks champions using LeagueOfGraphs' Arena stats for the selected rank: by pick rate (popularity), by win rate, or a mix of both. The most popular or highest-winrate champions are the ones banned first."
+					text="Ranks champions using op.gg's current Arena stats: by pick rate (popularity), by win rate, or a mix of both. The most popular or highest-winrate champions are the ones banned first."
 				/>
 			</div>
 			<Select.Root

@@ -1,17 +1,8 @@
 import { z } from 'zod';
-import { TEAM_SETUP_KEYS } from '$lib/data';
+import { CHAMPIONS, TEAM_SETUP_KEYS } from '$lib/data';
+import { MIN_NON_BANNED_CHAMPIONS } from '$lib/constants';
 
-export const RANKS = [
-	'iron',
-	'bronze',
-	'silver',
-	'gold',
-	'platinum',
-	'emerald',
-	'diamond',
-	'master'
-] as const;
-export type Rank = (typeof RANKS)[number];
+export const MAX_AUTO_BANS = CHAMPIONS.length - MIN_NON_BANNED_CHAMPIONS;
 
 export const CRITERIAS = ['popularity', 'winrate', 'mixed'] as const;
 export type Criteria = (typeof CRITERIAS)[number];
@@ -46,20 +37,9 @@ export const formSchema = z.object({
 	player_17: playerSchema.default('Player 17'),
 	player_18: playerSchema.default('Player 18'),
 	auto_ban: z.boolean().default(false),
-	auto_ban_count: z.number().min(0).max(170).default(8),
-	auto_ban_criteria: z.enum(CRITERIAS).default('popularity'),
-	auto_ban_rank: z.enum(RANKS).default('platinum')
+	auto_ban_count: z.number().int().min(1).max(MAX_AUTO_BANS).default(8),
+	auto_ban_criteria: z.enum(CRITERIAS).default('popularity')
 });
-
-// function getLocalStorageKey(key:string) {
-// 	if (!browser) return;
-// 	console.log('in browser');
-// 	console.log('formData', localStorage.getItem('formData'));
-
-// 	return localStorage.getItem('formData')
-// 		? JSON.parse(localStorage.getItem('formData')!)[key]
-// 		: undefined;
-// }
 
 export type FormSchema = typeof formSchema;
 export type FormSchemaType = z.infer<FormSchema>;
