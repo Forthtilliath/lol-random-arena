@@ -1,13 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-	assignChampionsToTeams,
-	getPath,
-	getPlayers,
-	getRandomChampion,
-	sortByMixed,
-	sortByPopularity,
-	sortByWinrate
-} from './actions';
+import { assignChampionsToTeams, getPlayers, getRandomChampion } from './actions';
 
 const champions = [
 	{ id: 1, slug: 'Ahri', name: 'Ahri' },
@@ -49,20 +41,6 @@ describe('getRandomChampion', () => {
 	});
 });
 
-describe('getPath', () => {
-	it('builds the popularity url by default', () => {
-		expect(getPath('platinum')).toBe(
-			'https://www.leagueofgraphs.com/fr/champions/builds/platinum/arena'
-		);
-	});
-
-	it('builds the winrate url when byWinrate is true', () => {
-		expect(getPath('platinum', true)).toBe(
-			'https://www.leagueofgraphs.com/fr/champions/builds/platinum/arena/by-winrate'
-		);
-	});
-});
-
 describe('assignChampionsToTeams', () => {
 	it('assigns a champion to every player of every team (duos)', () => {
 		const teams: { champion?: (typeof champions)[number] }[][] = [
@@ -71,7 +49,7 @@ describe('assignChampionsToTeams', () => {
 			[{}, {}]
 		];
 
-		assignChampionsToTeams(teams, champions, 2);
+		assignChampionsToTeams(teams, champions);
 
 		for (const team of teams) {
 			for (const player of team) {
@@ -87,7 +65,7 @@ describe('assignChampionsToTeams', () => {
 			[{}, {}, {}]
 		];
 
-		assignChampionsToTeams(teams, champions, 3);
+		assignChampionsToTeams(teams, champions);
 
 		for (const team of teams) {
 			expect(team).toHaveLength(3);
@@ -97,41 +75,19 @@ describe('assignChampionsToTeams', () => {
 		}
 	});
 
-	it('never reuses a champion from an earlier position in a later one', () => {
-		const teams: { champion?: (typeof champions)[number] }[][] = [
-			[{}, {}],
-			[{}, {}],
-			[{}, {}]
-		];
+	it('never picks the same champion twice in the lobby', () => {
+		// As many players as champions: any duplicate would leave a champion unused.
+		for (let run = 0; run < 50; run++) {
+			const teams: { champion?: (typeof champions)[number] }[][] = [
+				[{}, {}],
+				[{}, {}],
+				[{}, {}]
+			];
 
-		assignChampionsToTeams(teams, champions, 2);
+			assignChampionsToTeams(teams, champions);
 
-		const firstPositionIds = new Set(teams.map((team) => team[0].champion?.id));
-		const secondPositionIds = teams.map((team) => team[1].champion?.id);
-
-		for (const id of secondPositionIds) {
-			expect(firstPositionIds.has(id)).toBe(false);
+			const ids = teams.flat().map((player) => player.champion?.id);
+			expect(new Set(ids).size).toBe(champions.length);
 		}
-	});
-});
-
-describe('sort helpers', () => {
-	const champions = [
-		{ name: 'A', popularity: 10, winrate: 60 },
-		{ name: 'B', popularity: 30, winrate: 40 },
-		{ name: 'C', popularity: 20, winrate: 50 }
-	];
-
-	it('sortByPopularity sorts from the most to the least popular', () => {
-		expect([...champions].sort(sortByPopularity).map((c) => c.name)).toEqual(['B', 'C', 'A']);
-	});
-
-	it('sortByWinrate sorts from the highest to the lowest winrate', () => {
-		expect([...champions].sort(sortByWinrate).map((c) => c.name)).toEqual(['A', 'C', 'B']);
-	});
-
-	it('sortByMixed sorts by combined popularity + winrate', () => {
-		// A: 70, B: 70, C: 70 -> stable order kept as-is when tied
-		expect([...champions].sort(sortByMixed).map((c) => c.name)).toEqual(['A', 'B', 'C']);
 	});
 });
