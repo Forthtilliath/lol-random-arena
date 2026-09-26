@@ -18,6 +18,8 @@
 		class="absolute inset-x-0 bottom-0 bg-linear-to-t from-hextech via-hextech/85 to-transparent px-1.5 pt-8 pb-1.5 text-center"
 	>
 		<p class="truncate text-xs text-grey-1">{player.name}</p>
-		<p class="truncate font-display text-sm font-semibold text-gold-1">{player.champion.name}</p>
+		<p class="truncate font-display text-xs font-semibold text-gold-1 sm:text-sm">
+			{player.champion.name}
+		</p>
 	</figcaption>
 </figure>
