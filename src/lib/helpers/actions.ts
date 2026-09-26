@@ -1,5 +1,4 @@
 import { type Champion } from '$lib/data';
-import { getChampions, type ChampionWithRates } from './getChampions';
 import { getRandomNumber } from './number';
 
 /**
@@ -27,53 +26,24 @@ export function getRandomChampion(listChampions: Readonly<Champion[]>): Champion
 }
 
 /**
- * Assigns a random champion to every player of every team, one team position at a time
- * (all "position 0" players first, then all "position 1" players, etc.), so that a champion
- * used at an earlier position is never repeated at a later one. Mutates `teams` in place.
+ * Assigns a random champion to every player of every team. As in a real Arena lobby, a champion
+ * is never picked twice. Mutates `teams` in place.
  *
- * @param teams - Teams to fill, grouped by position (`teams[i][position]`).
- * @param championsPool - Champions available for assignment (after bans, if any).
- * @param teamSize - Number of players per team (2 for duos, 3 for trios, etc.).
+ * @param teams - Teams to fill (`teams[i][position]`).
+ * @param championsPool - Champions available for assignment (after bans, if any). Must hold at
+ * least as many champions as there are players.
  */
 export function assignChampionsToTeams<T extends { champion?: Champion }>(
 	teams: T[][],
-	championsPool: Readonly<Champion[]>,
-	teamSize: number
+	championsPool: Readonly<Champion[]>
 ): void {
-	const pickedInEarlierPositions = new Set<Champion['id']>();
+	const pool = [...championsPool];
 
-	for (let position = 0; position < teamSize; position++) {
-		const pool = championsPool.filter((c) => !pickedInEarlierPositions.has(c.id));
-		const pickedThisPosition = new Set<Champion['id']>();
-
-		for (const team of teams) {
+	for (const team of teams) {
+		for (const player of team) {
 			const champion = getRandomChampion(pool);
-			team[position].champion = champion;
-			pickedThisPosition.add(champion.id);
+			player.champion = champion;
+			pool.splice(pool.indexOf(champion), 1);
 		}
-
-		pickedThisPosition.forEach((id) => pickedInEarlierPositions.add(id));
 	}
-}
-
-export function getPath(rank: string, byWinrate: boolean = false) {
-	return `https://www.leagueofgraphs.com/fr/champions/builds/${rank}/arena${byWinrate ? '/by-winrate' : ''}`;
-}
-
-export async function getChampionsRate(rank: string, byWinrate = false) {
-	const html = await fetch(getPath(rank, byWinrate)).then((r) => r.text());
-
-	return getChampions(html);
-}
-
-export function sortByPopularity(a: ChampionWithRates, b: ChampionWithRates) {
-	return b.popularity - a.popularity;
-}
-
-export function sortByWinrate(a: ChampionWithRates, b: ChampionWithRates) {
-	return b.winrate - a.winrate;
-}
-
-export function sortByMixed(a: ChampionWithRates, b: ChampionWithRates) {
-	return b.popularity + b.winrate - (a.popularity + a.winrate);
 }
