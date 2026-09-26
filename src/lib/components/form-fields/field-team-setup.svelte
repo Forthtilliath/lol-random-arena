@@ -1,4 +1,5 @@
 <script lang="ts" generics="T extends Record<string, unknown>">
+	import { untrack } from 'svelte';
 	import * as Form from '$lib/components/ui/form';
 	import * as Select from '$lib/components/ui/select';
 	import InfoTooltip from '$lib/components/info-tooltip.svelte';
@@ -13,7 +14,7 @@
 
 	let { form, field }: Props = $props();
 
-	const value = fieldProxy(form, field) as unknown as Writable<TeamSetupKey>;
+	const value = untrack(() => fieldProxy(form, field)) as unknown as Writable<TeamSetupKey>;
 </script>
 
 <Form.Field {form} name={field}>
