@@ -3,6 +3,7 @@
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
 	import { fly } from 'svelte/transition';
+	import { untrack } from 'svelte';
 
 	import * as Form from '$lib/components/ui/form';
 	import * as Card from '$lib/components/ui/card';
@@ -14,8 +15,7 @@
 		FieldPlayerName,
 		FieldAutoBan,
 		FieldAutoBanCount,
-		FieldAutoBanCriteria,
-		FieldAutoBanRank
+		FieldAutoBanCriteria
 	} from '$lib/components/form-fields';
 
 	import { capitalize } from '$lib/helpers/capitalize';
@@ -39,33 +39,38 @@
 
 	let { data }: Props = $props();
 
-	const form = superForm(data.form, {
-		validators: zod4Client(formSchema),
-		invalidateAll: false,
-		resetForm: false,
-		// onChange: () => {
-		// 	localStorage.setItem('formData', JSON.stringify($formData));
-		// },
-		onUpdated: ({ form: f }) => {
-			if (f.valid) {
-				toast.info('Submitted!');
-			} else {
-				toast.error('Please fix the errors in the form.');
-			}
-		},
-		onResult: ({ result }) => {
-			if (result.type === 'success') {
-				teams = result?.data?.teams;
-				playersSettingsVisible = false;
+	// The form store and the initial teams are only seeded from the first `data`: superForm then
+	// owns the form state, and later results come from `onResult`, not from a new `data`.
+	const form = superForm(
+		untrack(() => data.form),
+		{
+			validators: zod4Client(formSchema),
+			invalidateAll: false,
+			resetForm: false,
+			onUpdated: ({ form: f }) => {
+				if (f.message) {
+					toast.error(f.message);
+				} else if (f.valid) {
+					toast.info('Submitted!');
+				} else {
+					toast.error('Please fix the errors in the form.');
+				}
+			},
+			onResult: ({ result }) => {
+				if (result.type === 'success') {
+					teams = result?.data?.teams;
+					playersSettingsVisible = false;
+				}
 			}
 		}
-	});
+	);
 
 	setCtx(() => $formData);
 
 	const { form: formData, enhance, submitting } = form;
-	let teams: PlayerWithChampion[][] = $state(data.teams);
-	let playersSettingsVisible = $state(data.teams.length === 0);
+	const initialTeams = untrack(() => data.teams);
+	let teams: PlayerWithChampion[][] = $state(initialTeams);
+	let playersSettingsVisible = $state(initialTeams.length === 0);
 
 	const activeSetup = $derived(TEAM_SETUPS[$formData.setup]);
 	const playerGroups = $derived(
@@ -82,8 +87,6 @@
 		await navigator.clipboard.writeText(url);
 		toast.success('Share link copied to clipboard!');
 	}
-
-	// $: browser && localStorage.setItem('formData', JSON.stringify($formData));
 </script>
 
 <div class="container">
@@ -139,8 +142,6 @@
 							field="auto_ban_criteria"
 							value={$formData.auto_ban_criteria}
 						/>
-
-						<FieldAutoBanRank {form} field="auto_ban_rank" value={$formData.auto_ban_rank} />
 					{/if}
 				</div>
 			</Fieldset>
