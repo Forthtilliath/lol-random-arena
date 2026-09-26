@@ -1,4 +1,5 @@
 <script lang="ts" generics="T extends Record<string, unknown>">
+	import { untrack } from 'svelte';
 	import * as Form from '$lib/components/ui/form';
 	import { Switch } from '$lib/components/ui/switch';
 	import {
@@ -15,7 +16,7 @@
 
 	let { form, field }: Props = $props();
 
-	const { value } = formFieldProxy(form, field) satisfies FormFieldProxy<boolean>;
+	const { value } = untrack(() => formFieldProxy(form, field)) satisfies FormFieldProxy<boolean>;
 </script>
 
 <Form.Field
