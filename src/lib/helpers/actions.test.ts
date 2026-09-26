@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+	assignChampionsToTeams,
 	getPath,
 	getPlayers,
 	getRandomChampion,
@@ -7,6 +8,15 @@ import {
 	sortByPopularity,
 	sortByWinrate
 } from './actions';
+
+const champions = [
+	{ id: 1, slug: 'Ahri', name: 'Ahri' },
+	{ id: 2, slug: 'Zed', name: 'Zed' },
+	{ id: 3, slug: 'Lux', name: 'Lux' },
+	{ id: 4, slug: 'Garen', name: 'Garen' },
+	{ id: 5, slug: 'Jinx', name: 'Jinx' },
+	{ id: 6, slug: 'Yasuo', name: 'Yasuo' }
+] as const;
 
 describe('getPlayers', () => {
 	it('extracts only the player_* fields as { name } objects', () => {
@@ -50,6 +60,58 @@ describe('getPath', () => {
 		expect(getPath('platinum', true)).toBe(
 			'https://www.leagueofgraphs.com/fr/champions/builds/platinum/arena/by-winrate'
 		);
+	});
+});
+
+describe('assignChampionsToTeams', () => {
+	it('assigns a champion to every player of every team (duos)', () => {
+		const teams: { champion?: (typeof champions)[number] }[][] = [
+			[{}, {}],
+			[{}, {}],
+			[{}, {}]
+		];
+
+		assignChampionsToTeams(teams, champions, 2);
+
+		for (const team of teams) {
+			for (const player of team) {
+				expect(player.champion).toBeDefined();
+				expect(champions).toContainEqual(player.champion);
+			}
+		}
+	});
+
+	it('assigns a champion to every player of every team (trios)', () => {
+		const teams: { champion?: (typeof champions)[number] }[][] = [
+			[{}, {}, {}],
+			[{}, {}, {}]
+		];
+
+		assignChampionsToTeams(teams, champions, 3);
+
+		for (const team of teams) {
+			expect(team).toHaveLength(3);
+			for (const player of team) {
+				expect(player.champion).toBeDefined();
+			}
+		}
+	});
+
+	it('never reuses a champion from an earlier position in a later one', () => {
+		const teams: { champion?: (typeof champions)[number] }[][] = [
+			[{}, {}],
+			[{}, {}],
+			[{}, {}]
+		];
+
+		assignChampionsToTeams(teams, champions, 2);
+
+		const firstPositionIds = new Set(teams.map((team) => team[0].champion?.id));
+		const secondPositionIds = teams.map((team) => team[1].champion?.id);
+
+		for (const id of secondPositionIds) {
+			expect(firstPositionIds.has(id)).toBe(false);
+		}
 	});
 });
 
