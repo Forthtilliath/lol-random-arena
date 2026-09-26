@@ -1,11 +1,8 @@
 <script lang="ts">
 	import { cn } from '$lib/utils.js';
-	import { buttonVariants, type ButtonEvents, type ButtonProps } from './index.js';
-	type $$Props = ButtonProps;
-	type $$Events = ButtonEvents;
+	import { buttonVariants, type ButtonProps } from './index.js';
 
-	export let variant: $$Props['variant'];
-	export let disabled: $$Props['disabled'] = false;
+	let { variant, disabled = false, ...restProps }: ButtonProps = $props();
 </script>
 
 {#if variant === 'minus'}
@@ -13,9 +10,10 @@
 		type="button"
 		id="decrement-button"
 		data-input-counter-decrement="quantity-input"
+		aria-label="Decrease value"
 		class={cn(buttonVariants({ variant, disabled }))}
 		{disabled}
-		on:click
+		{...restProps}
 	>
 		<svg
 			class="w-3 h-3 text-gray-900 dark:text-white"
@@ -38,9 +36,10 @@
 		type="button"
 		id="increment-button"
 		data-input-counter-increment="quantity-input"
+		aria-label="Increase value"
 		class={cn(buttonVariants({ variant, disabled }))}
 		{disabled}
-		on:click
+		{...restProps}
 	>
 		<svg
 			class="w-3 h-3 text-gray-900 dark:text-white"

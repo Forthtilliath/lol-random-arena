@@ -1,15 +1,15 @@
 <script lang="ts">
-	import type { InputEvents, InputProps } from './index.js';
+	import type { InputProps } from './index.js';
 	import Button from './button.svelte';
 	import Input from './input.svelte';
 	import { isDefined } from '$lib/helpers/asserts.js';
 
-	type $$Props = InputProps;
-	type $$Events = InputEvents;
-
-	export let value: $$Props['value'] = 0;
-	export let min: $$Props['min'] = -Infinity;
-	export let max: $$Props['max'] = Infinity;
+	let {
+		value = $bindable(0),
+		min = -Infinity,
+		max = Infinity,
+		...restProps
+	}: InputProps = $props();
 
 	function decrement() {
 		isDefined(value, 'Value must be defined');
@@ -24,7 +24,7 @@
 		value = Math.min(max, value + 1);
 	}
 
-	function onKeyDown(e: $$Events['keydown']) {
+	function onKeyDown(e: KeyboardEvent & { currentTarget: EventTarget & HTMLInputElement }) {
 		isDefined(value, 'Value must be defined');
 		isDefined(min, 'Min must be defined');
 		isDefined(max, 'Max must be defined');
@@ -34,7 +34,7 @@
 		if (e.key === 'ArrowDown') value = Math.max(min, value - 1);
 	}
 
-	function onInput(e: $$Events['input']) {
+	function onInput(e: Event & { currentTarget: EventTarget & HTMLInputElement }) {
 		isDefined(min, 'Min must be defined');
 		isDefined(max, 'Max must be defined');
 
@@ -54,11 +54,7 @@
 </script>
 
 <div class="relative flex items-center max-w-[8rem]">
-	<Button
-		variant="minus"
-		on:click={decrement}
-		disabled={isDisabled(value, min, (a, b) => a <= b)}
-	/>
-	<Input bind:value {min} {max} on:keydown={onKeyDown} on:input={onInput} {...$$restProps} />
-	<Button variant="plus" on:click={increment} disabled={isDisabled(value, max, (a, b) => a >= b)} />
+	<Button variant="minus" onclick={decrement} disabled={isDisabled(value, min, (a, b) => a <= b)} />
+	<Input bind:value {min} {max} onkeydown={onKeyDown} oninput={onInput} {...restProps} />
+	<Button variant="plus" onclick={increment} disabled={isDisabled(value, max, (a, b) => a >= b)} />
 </div>

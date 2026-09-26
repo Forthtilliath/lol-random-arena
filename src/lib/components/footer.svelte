@@ -1,11 +1,12 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import Logo2 from '$lib/assets/logo.jpg';
 </script>
 
 <footer class="container px-5 py-5 mx-auto flex items-center md:flex-row flex-col justify-center">
 	<a
 		class="flex title-font font-medium items-center md:justify-start justify-center text-slate-200"
-		href="/"
+		href={resolve('/')}
 	>
 		<img src={Logo2} class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg" alt="Logo" />
 

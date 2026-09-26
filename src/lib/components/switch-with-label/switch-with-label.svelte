@@ -3,12 +3,15 @@
 	import { Switch } from '$lib/components/ui/switch';
 	import { uniqueId } from '$lib/helpers/uniqueId';
 
-	export let label: string;
-	export let checked: boolean | undefined = undefined;
-	export let name: string | undefined = undefined;
+	interface Props {
+		label: string;
+		checked?: boolean | undefined;
+		name?: string | undefined;
+	}
 
-	let id: string;
-	$: id = uniqueId('input-with-label-');
+	let { label, checked = undefined, name = undefined }: Props = $props();
+
+	let id: string = $derived(uniqueId('input-with-label-'));
 </script>
 
 <div class="flex items-center space-x-2">

@@ -1,7 +1,7 @@
-import type { HTMLInputAttributes } from 'svelte/elements';
+import type { HTMLButtonAttributes, HTMLInputAttributes } from 'svelte/elements';
 import Root from './input-number.svelte';
 import { type VariantProps, tv } from 'tailwind-variants';
-import type { ControlSlotProps } from 'formsnap';
+import type { ControlAttrs } from 'formsnap';
 
 export const buttonVariants = tv({
 	base: 'h-10 border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-foreground/10',
@@ -20,32 +20,16 @@ export const buttonVariants = tv({
 
 export type Variant = VariantProps<typeof buttonVariants>['variant'];
 
-type ButtonProps = {
+type ButtonProps = Omit<HTMLButtonAttributes, 'disabled'> & {
 	variant: Variant;
 	disabled?: boolean;
 };
 type InputProps = Omit<HTMLInputAttributes, 'value'> &
-	Partial<ControlSlotProps['attrs']> & {
+	Partial<ControlAttrs> & {
 		value?: number;
 		min?: number;
 		max?: number;
 	};
-
-export type ButtonEventHandler<T extends Event = Event> = T & {
-	currentTarget: EventTarget & HTMLButtonElement;
-};
-export type ButtonEvents = {
-	click: ButtonEventHandler<MouseEvent>;
-};
-
-export type FormInputEvent<T extends Event = Event> = T & {
-	currentTarget: EventTarget & HTMLInputElement;
-};
-export type InputEvents = {
-	keydown: FormInputEvent<KeyboardEvent>;
-	input: FormInputEvent<InputEvent>;
-	wheel: FormInputEvent<WheelEvent>;
-};
 
 export {
 	Root,

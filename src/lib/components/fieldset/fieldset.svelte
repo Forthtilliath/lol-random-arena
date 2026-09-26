@@ -1,7 +1,12 @@
 <script lang="ts">
-	export let legend: string;
-	export let hideable: boolean = false;
-	export let visible: boolean = true;
+	interface Props {
+		legend: string;
+		hideable?: boolean;
+		visible?: boolean;
+		children?: import('svelte').Snippet;
+	}
+
+	let { legend, hideable = false, visible = $bindable(true), children }: Props = $props();
 
 	function toggle() {
 		visible = !visible;
@@ -11,14 +16,14 @@
 <fieldset>
 	<legend>
 		{#if hideable}
-			<button on:click={toggle} aria-label="Collapse">{legend}</button>
+			<button onclick={toggle} aria-label="Collapse">{legend}</button>
 		{:else}
 			{legend}
 		{/if}
 	</legend>
 
 	{#if visible}
-		<slot />
+		{@render children?.()}
 	{/if}
 </fieldset>
 
@@ -45,7 +50,7 @@
 			border-radius: 5px;
 			font-weight: bold;
 
-			&:has(button) {
+			&:has(:global(button)) {
 				button {
 					padding: 5px 10px;
 				}

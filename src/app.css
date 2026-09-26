@@ -99,10 +99,6 @@
 	--radius-sm: calc(var(--radius) - 4px);
 }
 
-@theme {
-	--grid-template-columns-cards: repeat(auto-fill, minmax(260px, 1fr));
-}
-
 @utility container {
 	width: 100%;
 	margin-inline: auto;
@@ -126,6 +122,14 @@
 }
 
 @custom-variant dark (&:is(.dark *));
+
+/* bits-ui exposes open/closed and checked/unchecked as a single `data-state` attribute value
+   rather than separate boolean attributes; map the shadcn-svelte shorthand variants to it so
+   `data-open:`/`data-closed:`/`data-checked:`/`data-unchecked:` utilities actually apply. */
+@custom-variant data-open (&[data-state='open']);
+@custom-variant data-closed (&[data-state='closed']);
+@custom-variant data-checked (&[data-state='checked']);
+@custom-variant data-unchecked (&[data-state='unchecked']);
 
 @layer base {
 	* {

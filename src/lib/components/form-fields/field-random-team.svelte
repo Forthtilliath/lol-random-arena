@@ -8,8 +8,12 @@
 		type SuperForm
 	} from 'sveltekit-superforms/client';
 
-	export let form: SuperForm<T>;
-	export let field: FormPathLeaves<T>;
+	interface Props {
+		form: SuperForm<T>;
+		field: FormPathLeaves<T>;
+	}
+
+	let { form, field }: Props = $props();
 
 	const { value } = formFieldProxy(form, field) satisfies FormFieldProxy<boolean>;
 </script>
@@ -19,21 +23,18 @@
 	name={field}
 	class="flex flex-row items-center justify-between rounded-lg border p-4"
 >
-	<Form.Control let:attrs>
-		<div class="space-y-0.5">
-			<div class="flex items-center gap-2">
-				<Switch
-					includeInput
-					{...attrs}
-					bind:checked={$value}
-					aria-label="Randomly assign players in teams"
-				/>
-				<Form.Label>Randomly assign players in teams</Form.Label>
+	<Form.Control>
+		{#snippet children({ props })}
+			<div class="space-y-0.5">
+				<div class="flex items-center gap-2">
+					<Switch {...props} bind:checked={$value} aria-label="Randomly assign players in teams" />
+					<Form.Label>Randomly assign players in teams</Form.Label>
+				</div>
+				<Form.Description>
+					If disabled, player 1 will be with player 2, player 3 with player 4, etc.
+				</Form.Description>
+				<Form.FieldErrors />
 			</div>
-			<Form.Description>
-				If disabled, player 1 will be with player 2, player 3 with player 4, etc.
-			</Form.Description>
-			<Form.FieldErrors />
-		</div>
+		{/snippet}
 	</Form.Control>
 </Form.Field>
